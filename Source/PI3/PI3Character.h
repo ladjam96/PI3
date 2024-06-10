@@ -6,6 +6,10 @@
 #include "InputActionValue.h"
 #include "PI3Character.generated.h"
 
+class UBaseAbility;
+class UShockwaveAbility;
+class UBlackHoleAbility;
+
 UCLASS(config=Game)
 class API3Character : public ACharacter
 {
@@ -15,14 +19,33 @@ public:
 	API3Character();
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void DecreaseHealth();
 
 	void Move(const FInputActionValue& Value);
 
-	UFUNCTION(BlueprintPure, Category = "Movement")
+	void UseBlackHole();
+	void UseShockwave();
+
+	UFUNCTION(BlueprintPure)
 	FVector GetCharacterVelocity() const;
 
-	UFUNCTION(BlueprintPure, Category = "Movement")
+	UFUNCTION(BlueprintPure)
 	FRotator GetCharacterDirection() const;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CurrentHealth = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxHealth = 0;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	TSubclassOf<class UPlayerHUD> PlayerHUDClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	UBlackHoleAbility* BlackHoleAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	UShockwaveAbility* ShockwaveAttack;
 
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
@@ -30,12 +53,12 @@ public:
 protected:
 	
 	virtual void BeginPlay() override;
-	void Tick(float DeltaSeconds) override;
+	void Tick(float DeltaTime) override;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Movement")
+	UPROPERTY(BlueprintReadOnly)
 	FVector2D MovementVector;
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Rotation")
+	UPROPERTY(BlueprintReadOnly)
 	FVector2D RotationVector;
 
 private:
@@ -45,10 +68,20 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* MoveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* BlackHoleAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* ShockwaveAction;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
+	
+	UPlayerHUD* PlayerHUDInstance;
+
+	void UseAbility(UBaseAbility* Ability);
 };
