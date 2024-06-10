@@ -20,6 +20,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void DecreaseHealth();
+	void IncreaseExp();
 
 	void Move(const FInputActionValue& Value);
 
@@ -32,20 +33,35 @@ public:
 	UFUNCTION(BlueprintPure)
 	FRotator GetCharacterDirection() const;
 
+	UFUNCTION(BlueprintCallable)
+	void GainExperience(float ExperienceAmount);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentHealth = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxHealth = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class UPlayerHUD> PlayerHUDClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBlackHoleAbility* BlackHoleAttack;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Abilities")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UShockwaveAbility* ShockwaveAttack;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int32 CurrentLevel = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	float CurrentExperience = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ExperienceToNextLevel = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsDead = false;
 
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
@@ -60,6 +76,12 @@ protected:
 	
 	UPROPERTY(BlueprintReadOnly)
 	FVector2D RotationVector;
+
+	UFUNCTION()
+	void LevelUp();
+
+	UFUNCTION()
+	float CalculateExperienceToNextLevel() const;
 
 private:
 	

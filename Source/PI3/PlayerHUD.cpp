@@ -7,7 +7,6 @@
 
 void UPlayerHUD::UpdateHealthBar(float CurrentHealth, float MaxHealth)
 {
-
 	ACustomPlayerController* PC = Cast<ACustomPlayerController>(GetWorld()->GetFirstPlayerController());
 	API3Character* Character = Cast<API3Character>(PC->GetCharacter());
 	
@@ -41,5 +40,29 @@ void UPlayerHUD::UpdateHealthText(float CurrentHealth, float MaxHealth)
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HealthText reference is nullptr in PlayerHUD!"));
+	}
+}
+
+void UPlayerHUD::UpdateExpBar(float CurrentExperience, float ExperienceToNextLevel)
+{
+	if (ExpBar)
+	{
+		ExpBar->SetPercent(CurrentExperience / ExperienceToNextLevel);
+	}
+}
+
+void UPlayerHUD::UpdateExpText(float CurrentExperience, float ExperienceToNextLevel)
+{
+	if (ExpText)
+	{
+		ExpText->SetText(FText::FromString(FString::Printf(TEXT("%.0f / %.0f"), CurrentExperience, ExperienceToNextLevel)));
+	}
+}
+
+void UPlayerHUD::UpdateLevelText(int32 CurrentLevel)
+{
+	if (LvlText)
+	{
+		LvlText->SetText(FText::FromString(FString::Printf(TEXT("Level: %d"), CurrentLevel)));
 	}
 }

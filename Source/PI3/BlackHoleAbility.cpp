@@ -34,7 +34,6 @@ void UBlackHoleAbility::Activate()
 			}
 
 			ResetCooldown();
-			UE_LOG(LogTemp, Warning, TEXT("BlackHoleAbility activated. Cooldown reset to: %f"), Cooldown);
 		}
 	}
 }

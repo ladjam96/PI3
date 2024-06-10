@@ -32,7 +32,6 @@ void UShockwaveAbility::Activate()
 			}
 
 			ResetCooldown();
-			UE_LOG(LogTemp, Warning, TEXT("ShockwaveAbility activated. Cooldown reset to: %f"), Cooldown);
 		}
 	}
 }
