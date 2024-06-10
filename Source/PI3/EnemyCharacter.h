@@ -21,8 +21,26 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	void MoveToPlayer();
+	UFUNCTION(BlueprintPure)
+	FVector GetCharacterVelocity() const;
 
+	UFUNCTION(BlueprintPure)
+	FRotator GetCharacterDirection() const;
+
+	UFUNCTION()
+	void Move();
+	
+	UPROPERTY(BlueprintReadOnly)
+	FVector2D MovementVector;
+
+	UPROPERTY(BlueprintReadOnly)
+	FVector2D RotationVector;
+
+	class USphereComponent* GetDetectPlayerCollisionSphere();
+	
 private:
 	API3Character* TargetPlayer;
+
+	//UPROPERTY(EditAnywhere)
+		//class USphereComponent* DetectPlayerCollisionSphere();
 };
