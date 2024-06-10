@@ -6,6 +6,7 @@
 #include "InputActionValue.h"
 #include "PI3Character.generated.h"
 
+class ACustomPlayerController;
 class UBaseAbility;
 class UShockwaveAbility;
 class UBlackHoleAbility;
@@ -36,6 +37,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GainExperience(float ExperienceAmount);
 
+	// UFUNCTION(BlueprintCallable)
+	// void MakeDamage(float DamageAmount);
+	
+	UFUNCTION(BlueprintCallable)
+	void TakeDamage(float DamageAmount);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentHealth = 0;
 
@@ -59,6 +66,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ExperienceToNextLevel = 0.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Damage = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsDead = false;
@@ -104,6 +114,6 @@ private:
 	class UCameraComponent* FollowCamera;
 	
 	UPlayerHUD* PlayerHUDInstance;
-
+	
 	void UseAbility(UBaseAbility* Ability);
 };

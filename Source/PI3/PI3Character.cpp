@@ -1,5 +1,6 @@
 #include "PI3Character.h"
 #include "BlackHoleAbility.h"
+#include "CustomPlayerController.h"
 #include "ShockwaveAbility.h"
 #include "Engine/LocalPlayer.h"
 #include "Camera/CameraComponent.h"
@@ -37,14 +38,16 @@ API3Character::API3Character()
 
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
     FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
-    FollowCamera->bUsePawnControlRotation = true;
+    FollowCamera->bUsePawnControlRotation = false;
     FollowCamera->SetProjectionMode(ECameraProjectionMode::Orthographic);
-    FollowCamera->SetRelativeRotation(FRotator(-50.f, 0.f, 0.f));
+    FollowCamera->SetRelativeRotation(FRotator(-75.f, 0.f, 0.f));
     FollowCamera->SetOrthoWidth(3500.f);
 
     BlackHoleAttack = CreateDefaultSubobject<UBlackHoleAbility>(TEXT("BlackHoleAttack"));
     ShockwaveAttack = CreateDefaultSubobject<UShockwaveAbility>(TEXT("Shockwave"));
 
+    IsDead = false;
+    
     MaxHealth = 500.f;
 
     CurrentLevel = 1;
@@ -107,6 +110,94 @@ void API3Character::Tick(float DeltaTime)
     }
 }
 
+void API3Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+    if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+    {
+        EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &API3Character::Move);
+        EnhancedInputComponent->BindAction(BlackHoleAction, ETriggerEvent::Triggered, this, &API3Character::UseBlackHole);
+        EnhancedInputComponent->BindAction(ShockwaveAction, ETriggerEvent::Triggered, this, &API3Character::UseShockwave);
+    }
+    else
+    {
+        UE_LOG(LogPI3Character, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+    }
+}
+
+void API3Character::IncreaseExp()
+{
+    CurrentExperience += 10.f;
+
+    if (PlayerHUDClass && PlayerHUDInstance)
+    {
+        PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
+        PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
+    }
+
+    if(CurrentExperience > ExperienceToNextLevel)
+    {
+        LevelUp();
+    }
+}
+
+void API3Character::Move(const FInputActionValue& Value)
+{
+    MovementVector = Value.Get<FVector2D>();
+
+    if (Controller != nullptr)
+    {
+        const FRotator Rotation = Controller->GetControlRotation();
+        const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+        const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+        const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+        AddMovementInput(ForwardDirection, MovementVector.Y);
+        AddMovementInput(RightDirection, MovementVector.X);
+    }
+}
+
+void API3Character::DecreaseHealth()
+{
+    CurrentHealth -= 20.0f;
+    CurrentHealth = FMath::Max(CurrentHealth, 0.0f);
+
+    if (PlayerHUDClass && PlayerHUDInstance)
+    {
+        PlayerHUDInstance->UpdateHealthBar(CurrentHealth, MaxHealth);
+        PlayerHUDInstance->UpdateHealthText(CurrentHealth, MaxHealth);
+    }
+
+    if(CurrentHealth <= 0)
+    {
+        IsDead = true;
+
+        APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+        APawn* PlayerPawn = PlayerController->GetPawn(); 
+        
+        PlayerPawn->DisableInput(PlayerController);
+        
+        UE_LOG(LogTemp, Log, TEXT("Character has died!"));
+    }
+}
+
+void API3Character::TakeDamage(float DamageAmount)
+{
+    CurrentHealth -= DamageAmount;
+
+    if(CurrentHealth <= 0)
+    {
+        IsDead = true;
+
+        APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+        APawn* PlayerPawn = PlayerController->GetPawn(); 
+        
+        PlayerPawn->DisableInput(PlayerController);
+        
+        UE_LOG(LogTemp, Log, TEXT("Character has died!"));
+    }
+}
+
 void API3Character::GainExperience(float ExperienceAmount)
 {
     CurrentExperience += ExperienceAmount;
@@ -152,74 +243,17 @@ void API3Character::UseAbility(UBaseAbility* Ability)
     }
 }
 
-void API3Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-    if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
-    {
-        EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &API3Character::Move);
-        EnhancedInputComponent->BindAction(BlackHoleAction, ETriggerEvent::Triggered, this, &API3Character::UseBlackHole);
-        EnhancedInputComponent->BindAction(ShockwaveAction, ETriggerEvent::Triggered, this, &API3Character::UseShockwave);
-    }
-    else
-    {
-        UE_LOG(LogPI3Character, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
-    }
-}
-
-void API3Character::DecreaseHealth()
-{
-    CurrentHealth -= 20.0f;
-    CurrentHealth = FMath::Max(CurrentHealth, 0.0f);
-
-    if (PlayerHUDClass && PlayerHUDInstance)
-    {
-        PlayerHUDInstance->UpdateHealthBar(CurrentHealth, MaxHealth);
-        PlayerHUDInstance->UpdateHealthText(CurrentHealth, MaxHealth);
-    }
-}
-
-void API3Character::IncreaseExp()
-{
-    CurrentExperience += 10.f;
-
-    if (PlayerHUDClass && PlayerHUDInstance)
-    {
-        PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
-        PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
-    }
-
-    if(CurrentExperience > ExperienceToNextLevel)
-    {
-        LevelUp();
-    }
-}
-
-void API3Character::Move(const FInputActionValue& Value)
-{
-    MovementVector = Value.Get<FVector2D>();
-
-    if (Controller != nullptr)
-    {
-        const FRotator Rotation = Controller->GetControlRotation();
-        const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-        const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-        const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-        AddMovementInput(ForwardDirection, MovementVector.Y);
-        AddMovementInput(RightDirection, MovementVector.X);
-    }
-}
-
 void API3Character::UseBlackHole()
 {
     UseAbility(BlackHoleAttack);
+    Damage = 10.f;
     UE_LOG(LogTemp, Log, TEXT("Launched Blackhole"));
 }
 
 void API3Character::UseShockwave()
 {
     UseAbility(ShockwaveAttack);
+    Damage = 5.f;
     UE_LOG(LogTemp, Log, TEXT("Launched Shockwave"));
 }
 
