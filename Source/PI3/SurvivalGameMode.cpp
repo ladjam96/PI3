@@ -3,6 +3,7 @@
 
 #include "SurvivalGameMode.h"
 
+#include "EnemyCharacter.h"
 #include "Kismet/GameplayStatics.h"
 
 ASurvivalGameMode::ASurvivalGameMode()
@@ -37,7 +38,7 @@ void ASurvivalGameMode::SpawnEnemies()
 	FVector SpawnLocation = GetRandomSpawnLocation();
 	FRotator SpawnRotation = FRotator::ZeroRotator;
 
-	//GetWorld()->SpawnActor<AEnemyCharacter>(AEnemyCharacter::StaticClass(), SpawnLocation, SpawnRotation);
+	GetWorld()->SpawnActor<AEnemyCharacter>(AEnemyCharacter::StaticClass(), SpawnLocation, SpawnRotation);
 
 	EnemyCount++;
 }
