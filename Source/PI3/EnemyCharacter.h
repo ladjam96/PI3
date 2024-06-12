@@ -13,12 +13,15 @@ class PI3_API AEnemyCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
+	
 	AEnemyCharacter();
 
 protected:
+	
 	virtual void BeginPlay() override;
 
 public:
+	
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintPure)
@@ -29,18 +32,31 @@ public:
 
 	UFUNCTION()
 	void Move();
+
+	UFUNCTION()
+	void AttackPlayer();
 	
 	UPROPERTY(BlueprintReadOnly)
 	FVector2D MovementVector;
 
 	UPROPERTY(BlueprintReadOnly)
 	FVector2D RotationVector;
-
-	class USphereComponent* GetDetectPlayerCollisionSphere();
+	
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	bool bIsAttacking;
 	
 private:
+	
 	API3Character* TargetPlayer;
-
-	//UPROPERTY(EditAnywhere)
-		//class USphereComponent* DetectPlayerCollisionSphere();
+	
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float AttackRange = 100.0f; 
+	
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float AttackCooldown = 1.5f;
+	
+	float LastAttackTime = 2.0f;
+	
+	class UEnemyAnimInstance* AnimInstance;
+	
 };

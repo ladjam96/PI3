@@ -2,6 +2,8 @@
 
 
 #include "EnemyCharacter.h"
+
+#include "EnemyAnimInstance.h"
 #include "Components/SphereComponent.h"
 #include "Animation/AnimInstance.h"
 #include "Components/BoxComponent.h"
@@ -17,17 +19,13 @@ AEnemyCharacter::AEnemyCharacter()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Configurar movimiento del personaje
+	
 	GetCharacterMovement()->bOrientRotationToMovement = true; 
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
 	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->BrakingDecelerationFalling = 1500.0f;
-
-	//DetectPlayerCollisionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Sphere"));
-
-	//DetectPlayerCollisionSphere->SetupAttachment(RootComponent);
 }
 
 void AEnemyCharacter::BeginPlay()
@@ -44,6 +42,15 @@ void AEnemyCharacter::Tick(float DeltaTime)
 	if (TargetPlayer)
 	{
 		Move();
+		
+		float DistanceToPlayer = FVector::Dist(GetActorLocation(), TargetPlayer->GetActorLocation());
+		
+		if (DistanceToPlayer <= AttackRange && GetWorld()->GetTimeSeconds() - LastAttackTime >= AttackCooldown)
+		{
+			AttackPlayer();
+			LastAttackTime = GetWorld()->GetTimeSeconds();
+			bIsAttacking = false;
+		}
 	}
 }
 
@@ -79,9 +86,17 @@ void AEnemyCharacter::Move()
 	}
 }
 
-/*USphereComponent* AEnemyCharacter::DetectPlayerCollisionSphere()
+void AEnemyCharacter::AttackPlayer()
 {
-	//return DetectPlayerCollisionSphere;
-}*/
+	if (TargetPlayer)
+	{
+		bIsAttacking = true;
+		UE_LOG(LogTemp, Warning, TEXT("Enemy is attacking the player."))
+		// Aplicar daño al jugador
+		UGameplayStatics::ApplyDamage(TargetPlayer, 10.0f, GetController(), this, UDamageType::StaticClass());
+
+		// Aquí puedes agregar lógica para efectos de sonido, partículas, etc.
+	}
+}
 
 
