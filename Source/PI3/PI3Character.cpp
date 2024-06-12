@@ -10,6 +10,7 @@
 #include "GameFramework/Controller.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "GameOverMenu.h"
 #include "InputActionValue.h"
 #include "PlayerHUD.h"
 
@@ -75,6 +76,11 @@ void API3Character::BeginPlay()
         }
     }
 
+    if (GameOverMenuClass)
+    {
+        GameOverMenuInstance = CreateWidget<UGameOverMenu>(GetWorld(), GameOverMenuClass);
+    }
+
     if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
     {
         if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
@@ -87,7 +93,7 @@ void API3Character::BeginPlay()
     GetWorldTimerManager().SetTimer(HealthDecreaseTimerHandle, this, &API3Character::DecreaseHealth, 1.0f, true, 0.0f);
 
     FTimerHandle ExpIncreaseTimerHandle;
-    GetWorldTimerManager().SetTimer(ExpIncreaseTimerHandle, this, &API3Character::IncreaseExp, 1.0f, true, 0.0f);
+    GetWorldTimerManager().SetTimer(ExpIncreaseTimerHandle, this, &API3Character::IncreaseExp, 1.0f, true, 0.0f);    
 }
 
 void API3Character::Tick(float DeltaTime)
@@ -108,6 +114,14 @@ void API3Character::Tick(float DeltaTime)
         ShockwaveAttack->UpdateCooldown(DeltaTime);
         GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Blue,FString::Printf(TEXT("Shockwave Cooldown: %.2f"), ShockwaveAttack->CurrentCooldown));
     }
+
+    CheckIfDead();
+
+    if(IsDead)
+    {
+        FTimerHandle TimerHandle;
+        GetWorldTimerManager().SetTimer(TimerHandle, this, &API3Character::ShowGOMenu, 3.0f, false);
+    }
 }
 
 void API3Character::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -121,22 +135,6 @@ void API3Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
     else
     {
         UE_LOG(LogPI3Character, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
-    }
-}
-
-void API3Character::IncreaseExp()
-{
-    CurrentExperience += 10.f;
-
-    if (PlayerHUDClass && PlayerHUDInstance)
-    {
-        PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
-        PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
-    }
-
-    if(CurrentExperience > ExperienceToNextLevel)
-    {
-        LevelUp();
     }
 }
 
@@ -159,7 +157,7 @@ void API3Character::Move(const FInputActionValue& Value)
 
 void API3Character::DecreaseHealth()
 {
-    CurrentHealth -= 20.0f;
+    CurrentHealth -= 50.0f;
     CurrentHealth = FMath::Max(CurrentHealth, 0.0f);
 
     if (PlayerHUDClass && PlayerHUDInstance)
@@ -193,13 +191,37 @@ void API3Character::TakeDamage(float DamageAmount)
         APawn* PlayerPawn = PlayerController->GetPawn(); 
         
         PlayerPawn->DisableInput(PlayerController);
-        
-        UE_LOG(LogTemp, Log, TEXT("Character has died!"));
+    }
+}
+
+void API3Character::IncreaseExp()
+{
+    if (IsDead)
+    {
+        return;
+    }
+
+    CurrentExperience += 10.f;
+
+    if (PlayerHUDClass && PlayerHUDInstance)
+    {
+        PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
+        PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
+    }
+
+    if (CurrentExperience >= ExperienceToNextLevel)
+    {
+        LevelUp();
     }
 }
 
 void API3Character::GainExperience(float ExperienceAmount)
 {
+    if (IsDead)
+    {
+        return;
+    }
+
     CurrentExperience += ExperienceAmount;
 
     while (CurrentExperience >= ExperienceToNextLevel)
@@ -214,6 +236,7 @@ void API3Character::GainExperience(float ExperienceAmount)
         PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
     }
 }
+
 
 void API3Character::LevelUp()
 {
@@ -255,6 +278,39 @@ void API3Character::UseShockwave()
     UseAbility(ShockwaveAttack);
     Damage = 5.f;
     UE_LOG(LogTemp, Log, TEXT("Launched Shockwave"));
+}
+
+
+void API3Character::ShowGOMenu()
+{
+    if (GameOverMenuInstance)
+    {
+        GameOverMenuInstance->AddToViewport();
+        UE_LOG(LogTemp, Log, TEXT("Game Over Menu is now shown."));
+
+        APlayerController* PlayerController = Cast<APlayerController>(GetController());
+        if (PlayerController)
+        {
+            PlayerController->SetPause(true);
+            PlayerController->bShowMouseCursor = true;
+            PlayerController->SetInputMode(FInputModeUIOnly());
+        }
+    }
+    else
+    {
+        UE_LOG(LogTemp, Warning, TEXT("Game Over Menu instance is null. Cannot show menu."));
+    }
+}
+
+void API3Character::CheckIfDead()
+{
+    if (IsDead && GameOverMenuClass && !GameOverMenuInstance)
+    {
+        if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
+        {
+            PlayerController->SetPause(true);
+        }
+    }
 }
 
 FVector API3Character::GetCharacterVelocity() const

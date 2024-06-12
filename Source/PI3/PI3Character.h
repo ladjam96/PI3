@@ -43,6 +43,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(float DamageAmount);
 
+	UFUNCTION()
+	void ShowGOMenu();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentHealth = 0;
 
@@ -51,6 +54,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class UPlayerHUD> PlayerHUDClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<class UGameOverMenu> GameOverMenuClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBlackHoleAbility* BlackHoleAttack;
@@ -94,6 +100,8 @@ protected:
 	float CalculateExperienceToNextLevel() const;
 
 private:
+
+	void CheckIfDead();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
@@ -114,6 +122,9 @@ private:
 	class UCameraComponent* FollowCamera;
 	
 	UPlayerHUD* PlayerHUDInstance;
+
+	UPROPERTY()
+    UGameOverMenu* GameOverMenuInstance;
 	
 	void UseAbility(UBaseAbility* Ability);
 };
