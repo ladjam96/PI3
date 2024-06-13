@@ -47,5 +47,5 @@ public:
 	UFUNCTION(BlueprintCallable)
     		void GenerateTerrain(const int SectionIndexX, const int SectionIndexY);
     
-    	float GetHeight(FVector2D Location);   // Deppending if we want Height for the level of Vampire Survivor :D
+    	float GetHeight(FVector2D Location);   // Deppending if we want Height for the level of Vampire Survivor :3
 };

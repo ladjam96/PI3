@@ -102,7 +102,7 @@ void API3Character::Tick(float DeltaTime)
 
     //Camera Rotation & Location
     FollowCamera->SetRelativeRotation(FRotator(-35.0f, 0.0f, 0.0f));
-    FollowCamera->SetRelativeLocation(FVector(-100.0f, 0.0f, 377.0f)); 
+    FollowCamera->SetRelativeLocation(FVector(-100.0f, 0.0f, 370.0f)); 
     CameraBoom->SetRelativeLocation(FVector(0, 0 , 500.f));
 
     if (BlackHoleAttack)

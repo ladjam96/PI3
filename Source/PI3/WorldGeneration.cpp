@@ -6,7 +6,7 @@ AWorldGeneration::AWorldGeneration()
 	PrimaryActorTick.bCanEverTick = true;
 
 	TerrainMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("TerrainMesh"));
-	TerrainMesh->SetupAttachment(GetRootComponent()); // <--
+	TerrainMesh->SetupAttachment(GetRootComponent()); 
 }
 
 void AWorldGeneration::BeginPlay()
@@ -18,7 +18,6 @@ void AWorldGeneration::BeginPlay()
 void AWorldGeneration::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
 }
 
 void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int SectionIndexY)
@@ -63,7 +62,7 @@ void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int Sectio
 			Triangles.Add(iTX + iTY * (XVertexCount + 2) + 1);
 
 			Triangles.Add(iTX + (iTY + 1) * (XVertexCount + 2));
-			Triangles.Add(iTX + (iTY +1) * (XVertexCount + 2) +1);
+			Triangles.Add(iTX + (iTY +1) * (XVertexCount + 2) + 1);
 			Triangles.Add(iTX + iTY * (XVertexCount + 2) + 1);
 		}
 	}
@@ -80,7 +79,7 @@ void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int Sectio
 
 	int VertexIndex = 0;
 
-	//Caluclate Normals
+	//Calculate Normals
 	UKismetProceduralMeshLibrary::CalculateTangentsForMesh(Vertices, Triangles, UVs, Normals, Tangents);
 
 	//Subset vertices and UVs
@@ -88,7 +87,7 @@ void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int Sectio
 	{
 		for(int32 iVX = -1; iVX <= XVertexCount; iVX++)
 		{
-			if(-1 < iVY && iVY < YVertexCount && -1 < iVX && iVX < XVertexCount)
+			if(-1 < iVY && iVY < YVertexCount && -1 < iVX && iVX < XVertexCount)    // <--
 			{
 				SubVertices.Add(Vertices[VertexIndex]);
 				SubUVs.Add(UVs[VertexIndex]);
