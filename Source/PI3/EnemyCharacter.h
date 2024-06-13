@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PI3Character.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
 #include "EnemyCharacter.generated.h"
 
@@ -15,6 +16,7 @@ class PI3_API AEnemyCharacter : public ACharacter
 public:
 	
 	AEnemyCharacter();
+	
 
 protected:
 	
@@ -23,40 +25,46 @@ protected:
 public:
 	
 	virtual void Tick(float DeltaTime) override;
-
+	//MOVE//
 	UFUNCTION(BlueprintPure)
 	FVector GetCharacterVelocity() const;
-
 	UFUNCTION(BlueprintPure)
 	FRotator GetCharacterDirection() const;
-
 	UFUNCTION()
 	void Move();
-
-	UFUNCTION()
-	void AttackPlayer();
-	
 	UPROPERTY(BlueprintReadOnly)
 	FVector2D MovementVector;
-
 	UPROPERTY(BlueprintReadOnly)
 	FVector2D RotationVector;
+	//
 	
-	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	//Attack//
+	UFUNCTION()
+	void AttackPlayer();
+	UPROPERTY(EditAnywhere, Category = "Combat")
 	bool bIsAttacking;
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float AttackRange;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	float AttackCooldown;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+	UAnimMontage* AttackMontage;
+	//
+
+	//Widget//
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	TSubclassOf<class UUserWidget> HealthBarWidgetClass;
+	UPROPERTY()
+	class UWidgetComponent* HealthBarWidgetComponent;
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float MaxHealth;
+	UPROPERTY(VisibleAnywhere, Category = "Combat")
+	float CurrentHealth;
+	//UFUNCTION(BlueprintCallable)
+	//void UpdateHealthBar(float CurrentHealth, float MaxHealth);
 	
 private:
 	
 	API3Character* TargetPlayer;
-	
-	UPROPERTY(EditAnywhere, Category = "Combat")
-	float AttackRange = 100.0f; 
-	
-	UPROPERTY(EditAnywhere, Category = "Combat")
-	float AttackCooldown = 1.5f;
-	
-	float LastAttackTime = 2.0f;
-	
-	class UEnemyAnimInstance* AnimInstance;
-	
+	float LastAttackTime;
 };
