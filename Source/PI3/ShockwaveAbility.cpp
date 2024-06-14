@@ -1,37 +1,75 @@
 #include "ShockwaveAbility.h"
-
 #include "GameFramework/Character.h"
+#include "GameFramework/Controller.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
 
 UShockwaveAbility::UShockwaveAbility()
 {
-	AbilityName = "Shockwave";
-	Cooldown = 5.f;
-	Force = 1000.0f;
+    AbilityName = "Shockwave";
+    Cooldown = 5.f;
+    NiagaraSystem = nullptr;
 }
 
 void UShockwaveAbility::Activate()
 {
-	if (!IsOnCooldown())
-	{
-		AActor* Owner = GetOwner();
-		if (Owner)
-		{
-			FVector CharacterLocation = Owner->GetActorLocation();
-			TArray<AActor*> OverlappingActors;
-			UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACharacter::StaticClass(), OverlappingActors);
+    if (!IsOnCooldown() && !bIsActivated)
+    {
+        AActor* Owner = GetOwner();
+        if (Owner)
+        {
+            ActivationLocation = GetActivationLocation();
+            ApplyShockwaveEffect(ActivationLocation);
+            
+            bIsActivated = true;
 
-			for (AActor* Actor : OverlappingActors)
-			{
-				if (Actor != Owner)
-				{
-					FVector Direction = (Actor->GetActorLocation() - CharacterLocation).GetSafeNormal();
-					// Apply force to push enemies away
-					// Implement actual push logic here
-				}
-			}
+            ResetCooldown();
+        }
+    }
+}
 
-			ResetCooldown();
-		}
-	}
+FVector UShockwaveAbility::GetActivationLocation() const
+{
+    AActor* Owner = GetOwner();
+    if (Owner)
+    {
+        return Owner->GetActorLocation();
+    }
+
+    return FVector::ZeroVector;
+}
+
+void UShockwaveAbility::ApplyShockwaveEffect(const FVector& Origin)
+{
+    TArray<AActor*> OverlappingActors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), OverlappingActors);
+
+    for (AActor* Actor : OverlappingActors)
+    {
+        if (Actor != GetOwner())
+        {
+            FVector Direction = Actor->GetActorLocation() - Origin;
+            Direction.Normalize();
+
+            if (UPrimitiveComponent* OtherPrimitiveComponent = Actor->FindComponentByClass<UPrimitiveComponent>())
+            {
+                if (OtherPrimitiveComponent->IsSimulatingPhysics() && bApplyForceToPhysicsObjects)
+                {
+                    OtherPrimitiveComponent->AddImpulse(Direction * Force);
+                }
+                else if (ACharacter* Character = Cast<ACharacter>(Actor))
+                {
+                    if (bApplyForceToCharacters)
+                    {
+                        Character->LaunchCharacter(Direction * Force, true, true);
+                    }
+                }
+            }
+        }
+    }
+
+    if (NiagaraSystem)
+    {
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystem, Origin, FRotator::ZeroRotator, FVector(1), true, true);
+    }
 }

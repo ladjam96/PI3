@@ -159,7 +159,7 @@ void API3Character::Move(const FInputActionValue& Value)
 
 void API3Character::DecreaseHealth()
 {
-    CurrentHealth -= 50.0f;
+    CurrentHealth -= 5.0f;
     CurrentHealth = FMath::Max(CurrentHealth, 0.0f);
 
     if (PlayerHUDClass && PlayerHUDInstance)
