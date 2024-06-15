@@ -2,10 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "BaseAbility.h"
-#include "NiagaraSystem.h"
+#include "NiagaraComponent.h"
 #include "ShockwaveAbility.generated.h"
-
-class UShockwaveComponent;
 
 UCLASS()
 class PI3_API UShockwaveAbility : public UBaseAbility
@@ -19,13 +17,13 @@ public:
 
 protected:
     UPROPERTY(EditAnywhere)
-    float Force = 1000.0f;
+    float Force = 0.f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    float Radius = 300.0f;
+    float Radius = 0.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    UNiagaraSystem* NiagaraSystem;
+    UNiagaraComponent* NiagaraComponent = nullptr;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bApplyForceToPhysicsObjects = true;
@@ -33,10 +31,15 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     bool bApplyForceToCharacters = true;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    float NiagaraDuration = 0.4f;
+
 private:
     FVector GetActivationLocation() const;
 
     void ApplyShockwaveEffect(const FVector& Origin);
+
+    void DeactivateNiagaraComponent();
 
     FVector ActivationLocation;
     bool bIsActivated = false;

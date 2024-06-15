@@ -2,13 +2,16 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 #include "Kismet/GameplayStatics.h"
-#include "NiagaraFunctionLibrary.h"
 
 UShockwaveAbility::UShockwaveAbility()
 {
     AbilityName = "Shockwave";
     Cooldown = 5.f;
-    NiagaraSystem = nullptr;
+    Force = 100000.0f;
+    Radius = 600.0f;
+
+    NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ShockwaveNiagaraComponent"));
+    NiagaraComponent->SetAutoActivate(false);
 }
 
 void UShockwaveAbility::Activate()
@@ -43,7 +46,7 @@ void UShockwaveAbility::ApplyShockwaveEffect(const FVector& Origin)
 {
     TArray<AActor*> OverlappingActors;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), OverlappingActors);
-
+    
     for (AActor* Actor : OverlappingActors)
     {
         if (Actor != GetOwner())
@@ -68,8 +71,23 @@ void UShockwaveAbility::ApplyShockwaveEffect(const FVector& Origin)
         }
     }
 
-    if (NiagaraSystem)
+    if (NiagaraComponent)
     {
-        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystem, Origin, FRotator::ZeroRotator, FVector(1), true, true);
+        NiagaraComponent->SetWorldLocation(Origin);
+        NiagaraComponent->Activate(true);
+        
+        FTimerHandle TimerHandle;
+        GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UShockwaveAbility::DeactivateNiagaraComponent, NiagaraDuration, false);
+    }
+}
+
+
+
+void UShockwaveAbility::DeactivateNiagaraComponent()
+{
+    if (NiagaraComponent)
+    {
+        NiagaraComponent->Deactivate();
+        bIsActivated = false;
     }
 }
