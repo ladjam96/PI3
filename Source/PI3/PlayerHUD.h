@@ -33,4 +33,16 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* LvlText;
+
+	//Pause Menu
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* PauseButton;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TSubclassOf<class UUserWidget> BP_PauseMenu;
+
+	UFUNCTION()
+	void OnPauseClick();
+
+	virtual void NativeConstruct() override;
 };
