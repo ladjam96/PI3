@@ -82,6 +82,24 @@ void UPlayerHUD::UpdateLevelText(int32 CurrentLevel)
 		LvlText->SetText(FText::FromString(FString::Printf(TEXT("Level: %d"), CurrentLevel)));
 	}
 }
+
+void UPlayerHUD::UpdateBlackholeBar(float Progress)
+{
+	if (BlackholeBar)
+	{
+		BlackholeBar->SetPercent(FMath::Clamp(Progress / 100.f, 0.0f, 1.0f));
+	}
+}
+
+void UPlayerHUD::UpdateShockwaveBar(float Progress)
+{
+	if (ShockwaveBar)
+	{
+		ShockwaveBar->SetPercent(FMath::Clamp(Progress / 100.f, 0.0f, 1.0f));
+	}
+}
+
+
 //Pause Game
 void UPlayerHUD::OnPauseClick()
 {

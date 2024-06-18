@@ -73,6 +73,8 @@ void API3Character::BeginPlay()
             PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
             PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
             PlayerHUDInstance->UpdateLevelText(CurrentLevel);
+            // PlayerHUDInstance->UpdateBlackholeBar(BlackHoleAttack->CurrentCooldown, BlackHoleAttack->Cooldown);
+            // PlayerHUDInstance->UpdateShockwaveBar(ShockwaveAttack->CurrentCooldown, ShockwaveAttack->Cooldown);
         }
     }
 
@@ -108,13 +110,17 @@ void API3Character::Tick(float DeltaTime)
     if (BlackHoleAttack)
     {
         BlackHoleAttack->UpdateCooldown(DeltaTime);
-        GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Red,FString::Printf(TEXT("Black Hole Cooldown: %.2f"), BlackHoleAttack->CurrentCooldown));
+
+        float RemainingCooldownPercentage = 100.f - (BlackHoleAttack->CurrentCooldown / BlackHoleAttack->Cooldown) * 100.f;
+        PlayerHUDInstance->UpdateBlackholeBar(RemainingCooldownPercentage);
     }
 
     if (ShockwaveAttack)
     {
         ShockwaveAttack->UpdateCooldown(DeltaTime);
-        GEngine->AddOnScreenDebugMessage(-1, 0.f, FColor::Blue,FString::Printf(TEXT("Shockwave Cooldown: %.2f"), ShockwaveAttack->CurrentCooldown));
+
+        float RemainingCooldownPercentage = 100.f - (ShockwaveAttack->CurrentCooldown / ShockwaveAttack->Cooldown) * 100.f;
+        PlayerHUDInstance->UpdateShockwaveBar(RemainingCooldownPercentage);
     }
 
     CheckIfDead();

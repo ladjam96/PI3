@@ -18,6 +18,9 @@ public:
 	void UpdateExpText(float CurrentExperience, float ExperienceToNextLevel);
 
 	void UpdateLevelText(int32 CurrentLevel);
+
+	void UpdateBlackholeBar(float Progress);
+	void UpdateShockwaveBar(float Progress);
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* HealthBar;
@@ -34,6 +37,12 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
 	class UTextBlock* LvlText;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UProgressBar* BlackholeBar;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
+	class UProgressBar* ShockwaveBar;
+	
 	//Pause Menu
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* PauseButton;
