@@ -31,9 +31,11 @@ protected:
 
 private:
 	ABlackholeActor* ActiveBlackHole = nullptr;
-
-	void ClearActiveBlackHole();
-
+	
 	bool bIsActivated = false;
+
+	FTimerHandle DeactivationTimerHandle;
+
+	void HandleDeactivationTimer();
 
 };

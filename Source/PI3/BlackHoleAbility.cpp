@@ -1,7 +1,5 @@
 #include "BlackHoleAbility.h"
 #include "BlackholeActor.h"
-#include "GameFramework/Character.h"
-#include "Kismet/GameplayStatics.h"
 
 UBlackHoleAbility::UBlackHoleAbility()
 {
@@ -34,9 +32,13 @@ void UBlackHoleAbility::Activate()
 
 			bIsActivated = true;
 			ResetCooldown();
+
+			float Duration = 5.0f;
+			GetWorld()->GetTimerManager().SetTimer(DeactivationTimerHandle, this, &UBlackHoleAbility::Deactivate, Duration, false);
 		}
 	}
 }
+
 
 void UBlackHoleAbility::Deactivate()
 {
@@ -44,6 +46,8 @@ void UBlackHoleAbility::Deactivate()
 	{
 		DestroyActiveBlackHole();
 		bIsActivated = false;
+
+		GetWorld()->GetTimerManager().ClearTimer(DeactivationTimerHandle);
 	}
 }
 
@@ -56,11 +60,7 @@ void UBlackHoleAbility::DestroyActiveBlackHole()
 	}
 }
 
-void UBlackHoleAbility::ClearActiveBlackHole()
+void UBlackHoleAbility::HandleDeactivationTimer()
 {
-	if (ActiveBlackHole)
-	{
-		ActiveBlackHole->Destroy();
-		ActiveBlackHole = nullptr;
-	}
+	Deactivate();
 }
