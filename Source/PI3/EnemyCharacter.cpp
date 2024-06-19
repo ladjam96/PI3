@@ -36,11 +36,7 @@ AEnemyCharacter::AEnemyCharacter()
     HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
     HealthBarWidgetComponent->SetDrawSize(FVector2D(100, 20));
 
-    static ConstructorHelpers::FClassFinder<UEnemyHealthBar> HealthBarWidgetClassFinder(TEXT("/Game/UI/EnemyHealthBarWidget"));
-    if (HealthBarWidgetClassFinder.Succeeded())
-    {
-        HealthBarWidgetComponent->SetWidgetClass(HealthBarWidgetClassFinder.Class);
-    }
+   
 }
 
 void AEnemyCharacter::BeginPlay()
@@ -103,7 +99,6 @@ void AEnemyCharacter::AttackPlayer(float DamageAmount)
         bIsAttacking = true;
         PlayAnimMontage(AttackMontage);
         TargetPlayer->TakeDamage(DamageAmount);
-        UE_LOG(LogTemp, Log, TEXT("Enemy attacked player for %f damage"), DamageAmount);
     }
 }
 
@@ -113,6 +108,7 @@ void AEnemyCharacter::TakeDamage(float DamageAmount)
 
     if (CurrentHealth <= 0)
     {
+        UE_LOG(LogTemp, Warning, TEXT("1"));
         Die();
     }
 
@@ -124,8 +120,9 @@ void AEnemyCharacter::TakeDamage(float DamageAmount)
 
 void AEnemyCharacter::Die()
 {
-    if (DeathMontage)
+    if (CurrentHealth <= 0)
     {
+        UE_LOG(LogTemp, Warning, TEXT("2"));
         PlayAnimMontage(DeathMontage);
         // Additional logic for effects like sound, particles, etc. can be added here.
     }

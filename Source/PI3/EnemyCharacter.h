@@ -48,12 +48,14 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FRotator GetCharacterDirection() const;
+	
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float MaxHealth;
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float CurrentHealth;
 
 protected:
 	API3Character* TargetPlayer;
-
-	float MaxHealth;
-	float CurrentHealth;
 
 	float LastAttackTime;
 
