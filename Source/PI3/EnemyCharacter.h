@@ -1,9 +1,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "PI3Character.h"
-#include "Components/WidgetComponent.h"
 #include "GameFramework/Character.h"
+#include "PI3Character.h"
+#include "EnemyHealthBar.h"
+#include "Components/WidgetComponent.h"
 #include "EnemyCharacter.generated.h"
 
 UCLASS()
@@ -12,83 +13,56 @@ class PI3_API AEnemyCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	
 	AEnemyCharacter();
-	
 
 protected:
-	
 	virtual void BeginPlay() override;
 
 public:
-	
 	virtual void Tick(float DeltaTime) override;
-	//MOVE//
-	UFUNCTION(BlueprintPure)
-	FVector GetCharacterVelocity() const;
-	
-	UFUNCTION(BlueprintPure)
-	FRotator GetCharacterDirection() const;
-	
-	UFUNCTION()
-	void Move();
-	
-	UPROPERTY(BlueprintReadOnly)
-	FVector2D MovementVector;
-	
-	UPROPERTY(BlueprintReadOnly)
-	FVector2D RotationVector;
-	//
-	
-	//Attack//
-	
+
+	// Combat
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	bool bIsAttacking;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	float AttackRange;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	float AttackCooldown;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	UAnimMontage* AttackMontage;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	UAnimMontage* DeathMontage;
-	//
-	UPROPERTY(EditAnywhere)
-	float Damage = 0.f;
 
-	//TakeDamage//
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	float Damage;
+
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(float DamageAmount);
-	//
-	
-	//Widget//
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-	UWidgetComponent* HealthBarWidgetComponent;
-	
-	UFUNCTION(BlueprintCallable)
-	void UpdateHealthBar(float NewHealth);
-	//
-	
-private:
-	
-	API3Character* TargetPlayer;
-	
-	//Widget//
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
-	float MaxHealth;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
-	float CurrentHealth;
-	//
 
-	//Attack//
-	UFUNCTION()
-	void AttackPlayer(float DamageAmount);
-	
+	UFUNCTION(BlueprintPure)
+	FVector GetCharacterVelocity() const;
+
+	UFUNCTION(BlueprintPure)
+	FRotator GetCharacterDirection() const;
+
+protected:
+	API3Character* TargetPlayer;
+
+	float MaxHealth;
+	float CurrentHealth;
+
 	float LastAttackTime;
+
+	void Move();
+	void AttackPlayer(float DamageAmount);
 	void Die();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	class UWidgetComponent* HealthBarWidgetComponent;
+
+	UEnemyHealthBar* HealthBarWidget;
 };
