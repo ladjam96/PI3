@@ -7,6 +7,7 @@
 #include "PI3Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/OutputDeviceNull.h"
 
 AEnemyCharacter::AEnemyCharacter()
 {
@@ -26,13 +27,15 @@ AEnemyCharacter::AEnemyCharacter()
 
 	//Attack//
 	bIsAttacking = false;
-	AttackRange = 90.0f; // Ajusta el rango de ataque según sea necesario
-	AttackCooldown = 3.0f; // Ajusta el tiempo de enfriamiento según sea necesario
+	AttackRange = 90.0f; 
+	AttackCooldown = 3.0f; 
 	LastAttackTime = 0.0f;
 
 	//Widget//
-	MaxHealth = 100.0f; // Ejemplo: establece la salud máxima inicial
-	CurrentHealth = MaxHealth; // Ejemplo: establece la salud actual inicial
+	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
+	HealthBarWidgetComponent->SetupAttachment(RootComponent);
+	HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
+	HealthBarWidgetComponent->SetDrawSize(FVector2D(100, 20)); 
 }
 
 void AEnemyCharacter::BeginPlay()
@@ -40,13 +43,6 @@ void AEnemyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	TargetPlayer = Cast<API3Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-
-	
-	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidgetComponent"));
-	HealthBarWidgetComponent->SetupAttachment(RootComponent); // Adjuntar al componente raíz del personaje
-	HealthBarWidgetComponent->SetWidgetClass(HealthBarWidgetClass);
-	HealthBarWidgetComponent->SetDrawSize(FVector2D(200.f, 25.f)); // Tamaño del widget (ancho x alto)
-	HealthBarWidgetComponent->SetVisibility(false); // Inicialmente oculto
 }
 
 void AEnemyCharacter::Tick(float DeltaTime)
@@ -120,12 +116,17 @@ void AEnemyCharacter::AttackPlayer()
 	}
 }
 
-/*void AEnemyCharacter::UpdateHealthBar(float NewHealth, float MaxHealth)
+void AEnemyCharacter::UpdateHealthBar(float NewHealth, float MaxHealth)
 {
 	if (HealthBarWidgetComponent && HealthBarWidgetComponent->GetUserWidgetObject())
 	{
 		UUserWidget* HealthBarWidget = HealthBarWidgetComponent->GetUserWidgetObject();
-		// Asumiendo que tienes una función UpdateHealth en el widget para actualizar la barra de vida
-		HealthBarWidget->CallFunctionByNameWithArguments(TEXT("UpdateHealth"), ar, nullptr, true);
+		if (HealthBarWidget)
+		{
+			// Asumiendo que tienes una función UpdateHealth en el widget para actualizar la barra de vida
+			FString FunctionCall = FString::Printf(TEXT("UpdateHealth %f %f"), NewHealth, MaxHealth);
+			FOutputDeviceNull ar;
+			HealthBarWidget->CallFunctionByNameWithArguments(*FunctionCall, ar, nullptr, true);
+		}
 	}
-}*/
+}

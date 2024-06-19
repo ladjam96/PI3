@@ -52,16 +52,11 @@ public:
 	//
 
 	//Widget//
-	UPROPERTY(EditDefaultsOnly, Category = "UI")
-	TSubclassOf<class UUserWidget> HealthBarWidgetClass;
-	UPROPERTY()
-	class UWidgetComponent* HealthBarWidgetComponent;
-	UPROPERTY(EditAnywhere, Category = "Combat")
-	float MaxHealth;
-	UPROPERTY(VisibleAnywhere, Category = "Combat")
-	float CurrentHealth;
-	//UFUNCTION(BlueprintCallable)
-	//void UpdateHealthBar(float CurrentHealth, float MaxHealth);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	UWidgetComponent* HealthBarWidgetComponent;
+	UFUNCTION(BlueprintCallable)
+	void UpdateHealthBar(float NewHealth, float MaxHealth);
+	//
 	
 private:
 	
