@@ -5,6 +5,7 @@
 
 #include "Animation/AnimInstance.h"
 #include "PI3Character.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Misc/OutputDeviceNull.h"
@@ -35,7 +36,9 @@ AEnemyCharacter::AEnemyCharacter()
 	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
 	HealthBarWidgetComponent->SetupAttachment(RootComponent);
 	HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
-	HealthBarWidgetComponent->SetDrawSize(FVector2D(100, 20)); 
+	HealthBarWidgetComponent->SetDrawSize(FVector2D(100, 20));
+	MaxHealth = 100.0f;
+	CurrentHealth = MaxHealth;
 }
 
 void AEnemyCharacter::BeginPlay()
@@ -43,6 +46,7 @@ void AEnemyCharacter::BeginPlay()
 	Super::BeginPlay();
 
 	TargetPlayer = Cast<API3Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	UpdateHealthBar(CurrentHealth);
 }
 
 void AEnemyCharacter::Tick(float DeltaTime)
@@ -116,17 +120,43 @@ void AEnemyCharacter::AttackPlayer()
 	}
 }
 
-void AEnemyCharacter::UpdateHealthBar(float NewHealth, float MaxHealth)
+void AEnemyCharacter::UpdateHealthBar(float NewHealth)
 {
 	if (HealthBarWidgetComponent && HealthBarWidgetComponent->GetUserWidgetObject())
 	{
 		UUserWidget* HealthBarWidget = HealthBarWidgetComponent->GetUserWidgetObject();
 		if (HealthBarWidget)
 		{
-			// Asumiendo que tienes una función UpdateHealth en el widget para actualizar la barra de vida
 			FString FunctionCall = FString::Printf(TEXT("UpdateHealth %f %f"), NewHealth, MaxHealth);
 			FOutputDeviceNull ar;
 			HealthBarWidget->CallFunctionByNameWithArguments(*FunctionCall, ar, nullptr, true);
 		}
 	}
+}
+
+void AEnemyCharacter::TakeDamage(float Damage)
+{
+	CurrentHealth -= Damage;
+	UpdateHealthBar(CurrentHealth);
+
+	if (CurrentHealth <= 0)
+	{
+		Die();
+	}
+}
+
+void AEnemyCharacter::Die()
+{
+	if (DeathMontage)
+	{
+		PlayAnimMontage(DeathMontage);
+		// Aquí puedes agregar lógica adicional para efectos de sonido, partículas, etc.
+	}
+
+
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	GetCharacterMovement()->DisableMovement();
+
+
+	SetLifeSpan(5.0f);
 }

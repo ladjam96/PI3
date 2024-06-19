@@ -39,8 +39,7 @@ public:
 	//
 	
 	//Attack//
-	UFUNCTION()
-	void AttackPlayer();
+	
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	bool bIsAttacking;
 	UPROPERTY(EditAnywhere, Category = "Combat")
@@ -49,17 +48,36 @@ public:
 	float AttackCooldown;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	UAnimMontage* AttackMontage;
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	UAnimMontage* DeathMontage;
 	//
 
+	//TakeDamage//
+	UFUNCTION(BlueprintCallable)
+	void TakeDamage(float Damage);
+	//
+	
 	//Widget//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	UWidgetComponent* HealthBarWidgetComponent;
 	UFUNCTION(BlueprintCallable)
-	void UpdateHealthBar(float NewHealth, float MaxHealth);
+	void UpdateHealthBar(float NewHealth);
 	//
 	
 private:
 	
 	API3Character* TargetPlayer;
+	
+	//Widget//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	float MaxHealth;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
+	float CurrentHealth;
+	//
+
+	//Attack//
+	UFUNCTION()
+	void AttackPlayer();
 	float LastAttackTime;
+	void Die();
 };
