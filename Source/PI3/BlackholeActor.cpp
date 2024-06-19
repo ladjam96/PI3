@@ -1,5 +1,8 @@
 #include "BlackholeActor.h"
 
+#include "EnemyCharacter.h"
+#include "GameFramework/CharacterMovementComponent.h"
+
 ABlackholeActor::ABlackholeActor()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -63,8 +66,26 @@ void ABlackholeActor::Initialize(const FVector& StartLocation, const FVector& Di
 
 void ABlackholeActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (OtherActor && OtherActor != this && OtherComp)
+	if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(OtherActor))
 	{
-		// Implement your overlap behavior, such as applying forces or other effects
+		ReduceEnemySpeed(EnemyCharacter);
+	}
+}
+
+void ABlackholeActor::ReduceEnemySpeed(AEnemyCharacter* EnemyCharacter)
+{
+	if (EnemyCharacter)
+	{
+		float OriginalSpeed = EnemyCharacter->GetCharacterMovement()->MaxWalkSpeed;
+		float ReducedSpeed = OriginalSpeed * 0.5f;
+
+		EnemyCharacter->GetCharacterMovement()->MaxWalkSpeed = ReducedSpeed;
+
+		FTimerHandle SpeedRestoreTimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [EnemyCharacter, OriginalSpeed]()
+		{
+			EnemyCharacter->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
+		}, 15.0f, false);
+		
 	}
 }

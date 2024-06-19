@@ -93,9 +93,9 @@ void API3Character::BeginPlay()
 
     FTimerHandle HealthDecreaseTimerHandle;
     GetWorldTimerManager().SetTimer(HealthDecreaseTimerHandle, this, &API3Character::DecreaseHealth, 1.0f, true, 0.0f);
-
-    FTimerHandle ExpIncreaseTimerHandle;
-    GetWorldTimerManager().SetTimer(ExpIncreaseTimerHandle, this, &API3Character::IncreaseExp, 1.0f, true, 0.0f);    
+    //
+    // FTimerHandle ExpIncreaseTimerHandle;
+    // GetWorldTimerManager().SetTimer(ExpIncreaseTimerHandle, this, &API3Character::IncreaseExp, 1.0f, true, 0.0f);    
 }
 
 void API3Character::Tick(float DeltaTime)
@@ -165,7 +165,7 @@ void API3Character::Move(const FInputActionValue& Value)
 
 void API3Character::DecreaseHealth()
 {
-    CurrentHealth -= 5.0f;
+    CurrentHealth -= 50.0f;
     CurrentHealth = FMath::Max(CurrentHealth, 0.0f);
 
     if (PlayerHUDClass && PlayerHUDInstance)
@@ -202,26 +202,26 @@ void API3Character::TakeDamage(float DamageAmount)
     }
 }
 
-void API3Character::IncreaseExp()
-{
-    if (IsDead)
-    {
-        return;
-    }
-
-    CurrentExperience += 10.f;
-
-    if (PlayerHUDClass && PlayerHUDInstance)
-    {
-        PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
-        PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
-    }
-
-    if (CurrentExperience >= ExperienceToNextLevel)
-    {
-        LevelUp();
-    }
-}
+// void API3Character::IncreaseExp()
+// {
+//     if (IsDead)
+//     {
+//         return;
+//     }
+//
+//     CurrentExperience += 10.f;
+//
+//     if (PlayerHUDClass && PlayerHUDInstance)
+//     {
+//         PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
+//         PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
+//     }
+//
+//     if (CurrentExperience >= ExperienceToNextLevel)
+//     {
+//         LevelUp();
+//     }
+// }
 
 void API3Character::GainExperience(float ExperienceAmount)
 {
