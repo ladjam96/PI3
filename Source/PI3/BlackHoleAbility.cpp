@@ -8,6 +8,7 @@ UBlackHoleAbility::UBlackHoleAbility()
 
 	Range = 1500.f;
 	SphereSpeed = 1000.f;
+	DamageAmount = 40.f;
 }
 
 void UBlackHoleAbility::Activate()
@@ -28,6 +29,21 @@ void UBlackHoleAbility::Activate()
 			if (ActiveBlackHole)
 			{
 				ActiveBlackHole->Initialize(SpawnLocation, Owner->GetActorForwardVector(), Range);
+
+				// Apply damage to actors within the black hole's range
+				TArray<AActor*> OverlappingActors;
+				ActiveBlackHole->GetOverlappingActors(OverlappingActors, AActor::StaticClass());
+
+				for (AActor* Actor : OverlappingActors)
+				{
+					if (Actor != Owner)
+					{
+						if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(Actor))
+						{
+							Enemy->TakeDamage(DamageAmount);
+						}
+					}
+				}
 			}
 
 			bIsActivated = true;
@@ -38,6 +54,7 @@ void UBlackHoleAbility::Activate()
 		}
 	}
 }
+
 
 
 void UBlackHoleAbility::Deactivate()

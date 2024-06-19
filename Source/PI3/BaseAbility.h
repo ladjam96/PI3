@@ -24,6 +24,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	float CurrentCooldown = 0.f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DamageAmount = 0.f;
+
+	UFUNCTION()
+	float GetDamageAmount() { return DamageAmount ;}
+	
 	UFUNCTION(BlueprintCallable)
 	bool IsOnCooldown() const;
 

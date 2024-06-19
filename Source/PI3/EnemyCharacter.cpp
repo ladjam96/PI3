@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "EnemyCharacter.h"
 
 #include "Animation/AnimInstance.h"
@@ -31,6 +28,7 @@ AEnemyCharacter::AEnemyCharacter()
 	AttackRange = 90.0f; 
 	AttackCooldown = 3.0f; 
 	LastAttackTime = 0.0f;
+	Damage = 20.f;
 
 	//Widget//
 	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
@@ -62,7 +60,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
 		if (DistanceToPlayer <= AttackRange && GetWorld()->GetTimeSeconds() - LastAttackTime >= AttackCooldown)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Enemy is within attack range."));
-			AttackPlayer();
+			AttackPlayer(Damage);
 			LastAttackTime = GetWorld()->GetTimeSeconds();
 		}
 		else
@@ -104,18 +102,21 @@ void AEnemyCharacter::Move()
 	}
 }
 
-void AEnemyCharacter::AttackPlayer()
+void AEnemyCharacter::AttackPlayer(float DamageAmount)
 {
+	DamageAmount = Damage;
+	
 	if (TargetPlayer && AttackMontage && !bIsAttacking)
 	{
 		bIsAttacking = true;
 
-		if (bIsAttacking == true)
+		if (bIsAttacking)
 		{
 			PlayAnimMontage(AttackMontage);
 
-			// Aplicar daño al jugador
-			//UGameplayStatics::ApplyDamage(TargetPlayer, 10.0f, GetController(), this, UDamageType::StaticClass());
+			TargetPlayer->TakeDamage(DamageAmount);
+			
+			UE_LOG(LogTemp, Log, TEXT("Enemy attacked player for %f damage"), DamageAmount);
 		}
 	}
 }
@@ -134,7 +135,7 @@ void AEnemyCharacter::UpdateHealthBar(float NewHealth)
 	}
 }
 
-void AEnemyCharacter::TakeDamage(float Damage)
+void AEnemyCharacter::TakeDamage(float DamageAmount)
 {
 	CurrentHealth -= Damage;
 	UpdateHealthBar(CurrentHealth);
@@ -153,10 +154,8 @@ void AEnemyCharacter::Die()
 		// Aquí puedes agregar lógica adicional para efectos de sonido, partículas, etc.
 	}
 
-
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetCharacterMovement()->DisableMovement();
-
 
 	SetLifeSpan(5.0f);
 }

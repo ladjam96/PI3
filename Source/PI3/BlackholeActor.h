@@ -24,7 +24,7 @@ protected:
 
 	UFUNCTION()
 	void ReduceEnemySpeed(AEnemyCharacter* EnemyCharacter);
-	
+
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -36,7 +36,13 @@ private:
 	USphereComponent* SphereCollider;
 
 	FVector MovementDirection;
-	float SphereSpeed;
-	float DistanceTraveled;
-	float MaxRange;
+	
+	UPROPERTY(EditAnywhere)
+	float SphereSpeed = 0.f;
+	
+	UPROPERTY(EditAnywhere)
+	float DistanceTraveled = 0.f;
+	
+	UPROPERTY(EditAnywhere)
+	float MaxRange = 0.f;
 };

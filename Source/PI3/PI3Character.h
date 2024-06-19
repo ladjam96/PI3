@@ -6,6 +6,7 @@
 #include "InputActionValue.h"
 #include "PI3Character.generated.h"
 
+class AEnemyCharacter;
 class ACustomPlayerController;
 class UBaseAbility;
 class UShockwaveAbility;
@@ -20,7 +21,7 @@ public:
 	API3Character();
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	void DecreaseHealth();
+	// void DecreaseHealth();
 	// void IncreaseExp();
 
 	void Move(const FInputActionValue& Value);
@@ -37,8 +38,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GainExperience(float ExperienceAmount);
 
-	// UFUNCTION(BlueprintCallable)
-	// void MakeDamage(float DamageAmount);
+	UFUNCTION(BlueprintCallable)
+	void Attack(float DamageAmount);
 	
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(float DamageAmount);
@@ -75,7 +76,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Damage = 0.f;
-
+		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsDead = false;
 
@@ -120,11 +121,15 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class UCameraComponent* FollowCamera;
-	
+
+	UPROPERTY()
+	UGameOverMenu* GameOverMenuInstance;
+
+	UPROPERTY()
 	UPlayerHUD* PlayerHUDInstance;
 
 	UPROPERTY()
-    UGameOverMenu* GameOverMenuInstance;
+	AEnemyCharacter* EnemyCharacter = nullptr;
 	
 	void UseAbility(UBaseAbility* Ability);
 };

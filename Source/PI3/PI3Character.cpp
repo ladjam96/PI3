@@ -54,6 +54,8 @@ API3Character::API3Character()
     CurrentLevel = 1;
     CurrentExperience = 0.f;
     ExperienceToNextLevel = CalculateExperienceToNextLevel();
+
+    Damage = 20.f;
 }
 
 void API3Character::BeginPlay()
@@ -91,8 +93,8 @@ void API3Character::BeginPlay()
         }
     }
 
-    FTimerHandle HealthDecreaseTimerHandle;
-    GetWorldTimerManager().SetTimer(HealthDecreaseTimerHandle, this, &API3Character::DecreaseHealth, 1.0f, true, 0.0f);
+    // FTimerHandle HealthDecreaseTimerHandle;
+    // GetWorldTimerManager().SetTimer(HealthDecreaseTimerHandle, this, &API3Character::DecreaseHealth, 1.0f, true, 0.0f);
     //
     // FTimerHandle ExpIncreaseTimerHandle;
     // GetWorldTimerManager().SetTimer(ExpIncreaseTimerHandle, this, &API3Character::IncreaseExp, 1.0f, true, 0.0f);    
@@ -163,28 +165,33 @@ void API3Character::Move(const FInputActionValue& Value)
     }
 }
 
-void API3Character::DecreaseHealth()
-{
-    CurrentHealth -= 50.0f;
-    CurrentHealth = FMath::Max(CurrentHealth, 0.0f);
+// void API3Character::DecreaseHealth()
+// {
+//     CurrentHealth -= 50.0f;
+//     CurrentHealth = FMath::Max(CurrentHealth, 0.0f);
+//
+//     if (PlayerHUDClass && PlayerHUDInstance)
+//     {
+//         PlayerHUDInstance->UpdateHealthBar(CurrentHealth, MaxHealth);
+//         PlayerHUDInstance->UpdateHealthText(CurrentHealth, MaxHealth);
+//     }
+//
+//     if(CurrentHealth <= 0)
+//     {
+//         IsDead = true;
+//
+//         APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+//         APawn* PlayerPawn = PlayerController->GetPawn(); 
+//         
+//         PlayerPawn->DisableInput(PlayerController);
+//         
+//         UE_LOG(LogTemp, Log, TEXT("Character has died!"));
+//     }
+// }
 
-    if (PlayerHUDClass && PlayerHUDInstance)
-    {
-        PlayerHUDInstance->UpdateHealthBar(CurrentHealth, MaxHealth);
-        PlayerHUDInstance->UpdateHealthText(CurrentHealth, MaxHealth);
-    }
+void API3Character::Attack(float DamageAmount)
+{    
 
-    if(CurrentHealth <= 0)
-    {
-        IsDead = true;
-
-        APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-        APawn* PlayerPawn = PlayerController->GetPawn(); 
-        
-        PlayerPawn->DisableInput(PlayerController);
-        
-        UE_LOG(LogTemp, Log, TEXT("Character has died!"));
-    }
 }
 
 void API3Character::TakeDamage(float DamageAmount)
@@ -199,6 +206,12 @@ void API3Character::TakeDamage(float DamageAmount)
         APawn* PlayerPawn = PlayerController->GetPawn(); 
         
         PlayerPawn->DisableInput(PlayerController);
+    }
+
+    if (PlayerHUDInstance)
+    {
+        PlayerHUDInstance->UpdateHealthBar(CurrentHealth, MaxHealth);
+        PlayerHUDInstance->UpdateHealthText(CurrentHealth, MaxHealth);
     }
 }
 
@@ -245,7 +258,6 @@ void API3Character::GainExperience(float ExperienceAmount)
     }
 }
 
-
 void API3Character::LevelUp()
 {
     CurrentLevel++;
@@ -277,16 +289,15 @@ void API3Character::UseAbility(UBaseAbility* Ability)
 void API3Character::UseBlackHole()
 {
     UseAbility(BlackHoleAttack);
-    Damage = 10.f;
-    UE_LOG(LogTemp, Log, TEXT("Launched Blackhole"));
+    UE_LOG(LogTemp, Log, TEXT("Launched Blackhole with Damage: %f"), BlackHoleAttack->GetDamageAmount());
 }
 
 void API3Character::UseShockwave()
 {
     UseAbility(ShockwaveAttack);
-    Damage = 5.f;
-    UE_LOG(LogTemp, Log, TEXT("Launched Shockwave"));
+    UE_LOG(LogTemp, Log, TEXT("Launched Shockwave with Damage: %f"), ShockwaveAttack->GetDamageAmount());
 }
+
 
 
 void API3Character::ShowGOMenu()

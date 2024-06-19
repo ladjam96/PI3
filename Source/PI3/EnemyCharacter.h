@@ -1,5 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -28,12 +26,16 @@ public:
 	//MOVE//
 	UFUNCTION(BlueprintPure)
 	FVector GetCharacterVelocity() const;
+	
 	UFUNCTION(BlueprintPure)
 	FRotator GetCharacterDirection() const;
+	
 	UFUNCTION()
 	void Move();
+	
 	UPROPERTY(BlueprintReadOnly)
 	FVector2D MovementVector;
+	
 	UPROPERTY(BlueprintReadOnly)
 	FVector2D RotationVector;
 	//
@@ -42,24 +44,31 @@ public:
 	
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	bool bIsAttacking;
+	
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	float AttackRange;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	float AttackCooldown;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Combat")
 	UAnimMontage* AttackMontage;
+	
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	UAnimMontage* DeathMontage;
 	//
+	UPROPERTY(EditAnywhere)
+	float Damage = 0.f;
 
 	//TakeDamage//
 	UFUNCTION(BlueprintCallable)
-	void TakeDamage(float Damage);
+	void TakeDamage(float DamageAmount);
 	//
 	
 	//Widget//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	UWidgetComponent* HealthBarWidgetComponent;
+	
 	UFUNCTION(BlueprintCallable)
 	void UpdateHealthBar(float NewHealth);
 	//
@@ -71,13 +80,15 @@ private:
 	//Widget//
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
 	float MaxHealth;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health", meta = (AllowPrivateAccess = "true"))
 	float CurrentHealth;
 	//
 
 	//Attack//
 	UFUNCTION()
-	void AttackPlayer();
+	void AttackPlayer(float DamageAmount);
+	
 	float LastAttackTime;
 	void Die();
 };

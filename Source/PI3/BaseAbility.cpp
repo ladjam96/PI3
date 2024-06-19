@@ -6,6 +6,7 @@ UBaseAbility::UBaseAbility()
 
 	Cooldown = 0.f;
 	CurrentCooldown = 0.f;
+	DamageAmount = 0.f;
 }
 
 void UBaseAbility::BeginPlay()

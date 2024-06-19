@@ -1,4 +1,6 @@
 #include "ShockwaveAbility.h"
+
+#include "EnemyCharacter.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 #include "Kismet/GameplayStatics.h"
@@ -10,6 +12,7 @@ UShockwaveAbility::UShockwaveAbility()
     Force = 100000.0f;
     Radius = 600.0f;
 
+    DamageAmount = 20.f;
     NiagaraComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("ShockwaveNiagaraComponent"));
     NiagaraComponent->SetAutoActivate(false);
 }
@@ -51,6 +54,11 @@ void UShockwaveAbility::ApplyShockwaveEffect(const FVector& Origin)
     {
         if (Actor != GetOwner())
         {
+            if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(Actor))
+            {
+                Enemy->TakeDamage(DamageAmount);
+            }
+
             FVector Direction = Actor->GetActorLocation() - Origin;
             Direction.Normalize();
 
@@ -80,7 +88,6 @@ void UShockwaveAbility::ApplyShockwaveEffect(const FVector& Origin)
         GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UShockwaveAbility::DeactivateNiagaraComponent, NiagaraDuration, false);
     }
 }
-
 
 
 void UShockwaveAbility::DeactivateNiagaraComponent()
