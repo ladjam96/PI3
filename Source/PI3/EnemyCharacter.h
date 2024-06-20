@@ -26,6 +26,9 @@ public:
 	bool bIsAttacking;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
+	bool bIsDead;
+
+	UPROPERTY(EditAnywhere, Category = "Combat")
 	float AttackRange;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")

@@ -1,5 +1,4 @@
 #include "EnemyCharacter.h"
-#include "Animation/AnimInstance.h"
 #include "PI3Character.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/WidgetComponent.h"
@@ -21,6 +20,7 @@ AEnemyCharacter::AEnemyCharacter()
 
     // Combat
     bIsAttacking = false;
+    bIsDead = false;
     AttackRange = 90.0f;
     AttackCooldown = 3.0f;
     LastAttackTime = 0.0f;
@@ -60,9 +60,9 @@ void AEnemyCharacter::Tick(float DeltaTime)
     {
         Move();
 
-        float DistanceToPlayer = FVector::Dist(GetActorLocation(), TargetPlayer->GetActorLocation());
+        const float DistanceToPlayer = FVector::Dist(GetActorLocation(), TargetPlayer->GetActorLocation());
 
-        if (DistanceToPlayer <= AttackRange && GetWorld()->GetTimeSeconds() - LastAttackTime >= AttackCooldown)
+        if (DistanceToPlayer <= AttackRange && GetWorld()->GetTimeSeconds() - LastAttackTime >= AttackCooldown && bIsDead == false)
         {
             UE_LOG(LogTemp, Warning, TEXT("Enemy is within attack range."));
             AttackPlayer(Damage);
@@ -78,6 +78,14 @@ void AEnemyCharacter::Tick(float DeltaTime)
     {
         HealthBarWidget->UpdateHealthBar(CurrentHealth, MaxHealth);
     }
+    if (CurrentHealth <= 0 && bIsDead == false)
+    {
+        bIsDead = true;
+        Die();
+        UE_LOG(LogTemp, Warning, TEXT("0"));
+    }
+
+   
 }
 
 void AEnemyCharacter::Move()
@@ -106,31 +114,36 @@ void AEnemyCharacter::TakeDamage(float DamageAmount)
 {
     CurrentHealth -= DamageAmount;
 
-    if (CurrentHealth <= 0)
-    {
-        UE_LOG(LogTemp, Warning, TEXT("1"));
-        Die();
-    }
-
     if (HealthBarWidget)
     {
         HealthBarWidget->UpdateHealthBar(CurrentHealth, MaxHealth);
     }
+
+   
+    
 }
 
 void AEnemyCharacter::Die()
 {
-    if (CurrentHealth <= 0)
+    
+    
+    if (DeathMontage && bIsDead == true)
     {
-        UE_LOG(LogTemp, Warning, TEXT("2"));
+        UE_LOG(LogTemp, Warning, TEXT("3"));
+    
         PlayAnimMontage(DeathMontage);
-        // Additional logic for effects like sound, particles, etc. can be added here.
+        
+        GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        GetCharacterMovement()->DisableMovement();
+    
+        SetLifeSpan(0.7f);
+        bIsAttacking = false;
     }
+    
+    // Additional logic for effects like sound, particles, etc. can be added here.
+    
 
-    GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-    GetCharacterMovement()->DisableMovement();
-
-    SetLifeSpan(5.0f);
+    
 }
 
 FVector AEnemyCharacter::GetCharacterVelocity() const
