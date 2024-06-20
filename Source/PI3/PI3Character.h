@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BaseAttack.h"
 #include "GameFramework/Character.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
@@ -28,6 +29,7 @@ public:
 
 	void UseBlackHole();
 	void UseShockwave();
+	void UseBasicAttack();
 
 	UFUNCTION(BlueprintPure)
 	FVector GetCharacterVelocity() const;
@@ -64,6 +66,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UShockwaveAbility* ShockwaveAttack;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBaseAttack* BaseAttack;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 CurrentLevel = 0;
@@ -115,6 +120,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* ShockwaveAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* AttackAction;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class USpringArmComponent* CameraBoom;

@@ -1,11 +1,8 @@
 #include "BlackholeActor.h"
-
 #include "BlackHoleAbility.h"
 #include "EnemyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "Engine/StaticMeshActor.h"
-#include "Kismet/GameplayStatics.h"
 #include "Engine/Engine.h"
 
 ABlackholeActor::ABlackholeActor()

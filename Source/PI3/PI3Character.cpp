@@ -46,6 +46,7 @@ API3Character::API3Character()
 
     BlackHoleAttack = CreateDefaultSubobject<UBlackHoleAbility>(TEXT("BlackHoleAttack"));
     ShockwaveAttack = CreateDefaultSubobject<UShockwaveAbility>(TEXT("Shockwave"));
+    BaseAttack = CreateDefaultSubobject<UBaseAttack>(TEXT("BaseAttack"));
 
     IsDead = false;
     
@@ -75,8 +76,6 @@ void API3Character::BeginPlay()
             PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
             PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
             PlayerHUDInstance->UpdateLevelText(CurrentLevel);
-            // PlayerHUDInstance->UpdateBlackholeBar(BlackHoleAttack->CurrentCooldown, BlackHoleAttack->Cooldown);
-            // PlayerHUDInstance->UpdateShockwaveBar(ShockwaveAttack->CurrentCooldown, ShockwaveAttack->Cooldown);
         }
     }
 
@@ -125,6 +124,11 @@ void API3Character::Tick(float DeltaTime)
         PlayerHUDInstance->UpdateShockwaveBar(RemainingCooldownPercentage);
     }
 
+    if(BaseAttack)
+    {
+        BaseAttack->UpdateCooldown(DeltaTime);
+    }
+
     CheckIfDead();
 
     if(IsDead)
@@ -141,6 +145,7 @@ void API3Character::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
         EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &API3Character::Move);
         EnhancedInputComponent->BindAction(BlackHoleAction, ETriggerEvent::Triggered, this, &API3Character::UseBlackHole);
         EnhancedInputComponent->BindAction(ShockwaveAction, ETriggerEvent::Triggered, this, &API3Character::UseShockwave);
+        EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &API3Character::UseBasicAttack);
     }
     else
     {
@@ -296,6 +301,10 @@ void API3Character::UseShockwave()
     UseAbility(ShockwaveAttack);
 }
 
+void API3Character::UseBasicAttack()
+{
+    UseAbility(BaseAttack);
+}
 
 
 void API3Character::ShowGOMenu()
