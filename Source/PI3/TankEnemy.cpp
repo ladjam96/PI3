@@ -1,14 +1,12 @@
 
 
-
-#include "SpeedEnemy.h"
+#include "TankEnemy.h"
 
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-
-ASpeedEnemy::ASpeedEnemy()
+ATankEnemy::ATankEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -21,18 +19,18 @@ ASpeedEnemy::ASpeedEnemy()
 	// Movement
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
-	GetCharacterMovement()->MaxWalkSpeed = 800.0f;
+	GetCharacterMovement()->MaxWalkSpeed = 200.0f;
 
 	// Combat
 	bIsAttacking = false;
 	bIsDead = false;
-	AttackRange = 120.0f;
-	AttackCooldown = 1.0f;
+	AttackRange = 150.0f;
+	AttackCooldown = 5.0f;
 	LastAttackTime = 0.0f;
-	Damage = 50.f;
+	Damage = 100.f;
 
 	// Health
-	MaxHealth = 50.0f;
+	MaxHealth = 500.0f;
 	CurrentHealth = MaxHealth;
 
 	// Health Bar Widget
@@ -42,7 +40,7 @@ ASpeedEnemy::ASpeedEnemy()
 	HealthBarWidgetComponent->SetDrawSize(FVector2D(100, 20));
 }
 
-void ASpeedEnemy::BeginPlay()
+void ATankEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -55,7 +53,7 @@ void ASpeedEnemy::BeginPlay()
 	}
 }
 
-void ASpeedEnemy::Tick(float DeltaTime)
+void ATankEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
@@ -89,7 +87,7 @@ void ASpeedEnemy::Tick(float DeltaTime)
 	}
 }
 
-void ASpeedEnemy::Move()
+void ATankEnemy::Move()
 {
 	if (TargetPlayer && Controller != nullptr)
 	{
@@ -101,7 +99,7 @@ void ASpeedEnemy::Move()
 	}
 }
 
-void ASpeedEnemy::AttackPlayer(float DamageAmount)
+void ATankEnemy::AttackPlayer(float DamageAmount)
 {
 	if (TargetPlayer && AttackMontage && !bIsAttacking)
 	{
@@ -112,7 +110,7 @@ void ASpeedEnemy::AttackPlayer(float DamageAmount)
 	}
 }
 
-void ASpeedEnemy::TakeDamage(float DamageAmount)
+void ATankEnemy::TakeDamage(float DamageAmount)
 {
 	CurrentHealth -= DamageAmount;
 
@@ -122,7 +120,7 @@ void ASpeedEnemy::TakeDamage(float DamageAmount)
 	}
 }
 
-void ASpeedEnemy::Die()
+void ATankEnemy::Die()
 {
 	if (DeathMontage && bIsDead == true)
 	{
@@ -131,18 +129,18 @@ void ASpeedEnemy::Die()
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetCharacterMovement()->DisableMovement();
     
-		SetLifeSpan(0.50f);
+		SetLifeSpan(2.50f);
 		bIsAttacking = false;
 	}
 	// Sounds/particles...
 }
 
-FVector ASpeedEnemy::GetCharacterVelocity() const
+FVector ATankEnemy::GetCharacterVelocity() const
 {
 	return GetVelocity();
 }
 
-FRotator ASpeedEnemy::GetCharacterDirection() const
+FRotator ATankEnemy::GetCharacterDirection() const
 {
 	if (Controller != nullptr)
 	{
@@ -151,6 +149,4 @@ FRotator ASpeedEnemy::GetCharacterDirection() const
 	}
 	return FRotator::ZeroRotator;
 }
-
-
 

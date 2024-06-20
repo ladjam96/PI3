@@ -5,15 +5,15 @@
 #include "PI3Character.h"
 #include "EnemyHealthBar.h"
 #include "Components/WidgetComponent.h"
-#include "SpeedEnemy.generated.h"
+#include "TankEnemy.generated.h"
 
 UCLASS()
-class PI3_API ASpeedEnemy : public ACharacter
+class PI3_API ATankEnemy : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
-	ASpeedEnemy();
+	ATankEnemy();
 
 protected:
 	virtual void BeginPlay() override;
@@ -70,5 +70,4 @@ protected:
 	class UWidgetComponent* HealthBarWidgetComponent;
 
 	UEnemyHealthBar* HealthBarWidget;
-
 };
