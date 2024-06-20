@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
@@ -10,42 +9,48 @@ UCLASS()
 class PI3_API AWorldGeneration : public AActor
 {
 	GENERATED_BODY()
-	
-public:	
+    
+public:    
 	AWorldGeneration();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int XVertexCount = 50;
-	
+    
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int YVertexCount = 50;
-	
+    
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float CellSize = 1000;
-	
+    
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int NumOfSectionX = 2;
-	
+    
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int NumOfSectionY = 2;
-	
+    
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int MeshSectionIndex = 0;
-	
+    
 	UPROPERTY(BlueprintReadOnly)
 	UProceduralMeshComponent* TerrainMesh;
-	
+    
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UMaterialInterface* TerrainMaterial = nullptr;
 
 protected:
 	virtual void BeginPlay() override;
 
-public:	
+public:    
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-    		void GenerateTerrain(const int SectionIndexX, const int SectionIndexY);
+	void GenerateTerrain(const int SectionIndexX, const int SectionIndexY);
     
-    	float GetHeight(FVector2D Location);   // Deppending if we want Height for the level of Vampire Survivor :3
+	float GetHeight(FVector2D Location); // if we want Height for the level of Vampire Survivor :3
+
+private:
+	FVector2D LastPlayerSection;
+	void CheckAndGenerateNewTerrain();
+	TWeakObjectPtr<AActor> Player; //AActor* Player;
+	void FindPlayer();
 };
