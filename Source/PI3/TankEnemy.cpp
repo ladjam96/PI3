@@ -24,13 +24,13 @@ ATankEnemy::ATankEnemy()
 	// Combat
 	bIsAttacking = false;
 	bIsDead = false;
-	AttackRange = 150.0f;
+	AttackRange = 300.0f;
 	AttackCooldown = 5.0f;
 	LastAttackTime = 0.0f;
-	Damage = 100.f;
+	Damage = 500.f;
 
 	// Health
-	MaxHealth = 500.0f;
+	MaxHealth = 1000.0f;
 	CurrentHealth = MaxHealth;
 
 	// Health Bar Widget

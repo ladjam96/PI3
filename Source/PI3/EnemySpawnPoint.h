@@ -19,19 +19,35 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	UPROPERTY(EditAnywhere, Category = "Spawning")
-	TSubclassOf<class AEnemyCharacter> EnemyClass;
+	TSubclassOf<class AEnemyCharacter> BasicEnemyClass;
 
 	UPROPERTY(EditAnywhere, Category = "Spawning")
-	TSubclassOf<class ASpeedEnemy> EnemyClassSpeed;
+	TSubclassOf<class ASpeedEnemy> FastEnemyClass;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+	TSubclassOf<class ATankEnemy> BossEnemyClass;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+	float SpawnRadius;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+	float BasicEnemySpawnInterval;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+	float FastEnemySpawnInterval;
+
+	UPROPERTY(EditAnywhere, Category = "Spawning")
+	float BossEnemySpawnInterval;
 	
-	UPROPERTY(EditAnywhere, Category = "Spawning")
-	TSubclassOf<class ATankEnemy> EnemyClassTank;
-
-	UPROPERTY(EditAnywhere, Category = "Spawning")
-	float RespawnTime;
-
-	void SpawnEnemy();
 
 private:
-	FTimerHandle RespawnTimerHandle;
+	void SpawnEnemy(TSubclassOf<ACharacter> EnemyClass);
+	void SpawnBasicEnemy();
+	void SpawnFastEnemy();
+	void SpawnBossEnemy();
+
+
+	FTimerHandle BasicEnemySpawnTimerHandle;
+	FTimerHandle FastEnemySpawnTimerHandle;
+	FTimerHandle BossEnemySpawnTimerHandle;
 };
