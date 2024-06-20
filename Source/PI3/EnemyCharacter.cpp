@@ -21,7 +21,7 @@ AEnemyCharacter::AEnemyCharacter()
     // Combat
     bIsAttacking = false;
     bIsDead = false;
-    AttackRange = 90.0f;
+    AttackRange = 100.0f;
     AttackCooldown = 3.0f;
     LastAttackTime = 0.0f;
     Damage = 20.f;
@@ -45,7 +45,7 @@ void AEnemyCharacter::BeginPlay()
 
     TargetPlayer = Cast<API3Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
-    // Retrieve the widget object after BeginPlay to ensure it's initialized correctly
+    
     if (HealthBarWidgetComponent)
     {
         HealthBarWidget = Cast<UEnemyHealthBar>(HealthBarWidgetComponent->GetUserWidgetObject());
@@ -82,10 +82,7 @@ void AEnemyCharacter::Tick(float DeltaTime)
     {
         bIsDead = true;
         Die();
-        UE_LOG(LogTemp, Warning, TEXT("0"));
     }
-
-   
 }
 
 void AEnemyCharacter::Move()
@@ -107,6 +104,7 @@ void AEnemyCharacter::AttackPlayer(float DamageAmount)
         bIsAttacking = true;
         PlayAnimMontage(AttackMontage);
         TargetPlayer->TakeDamage(DamageAmount);
+        //sound/particles...
     }
 }
 
@@ -129,8 +127,6 @@ void AEnemyCharacter::Die()
     
     if (DeathMontage && bIsDead == true)
     {
-        UE_LOG(LogTemp, Warning, TEXT("3"));
-    
         PlayAnimMontage(DeathMontage);
         
         GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -139,11 +135,7 @@ void AEnemyCharacter::Die()
         SetLifeSpan(0.7f);
         bIsAttacking = false;
     }
-    
-    // Additional logic for effects like sound, particles, etc. can be added here.
-    
-
-    
+    // Sounds/particles...
 }
 
 FVector AEnemyCharacter::GetCharacterVelocity() const
