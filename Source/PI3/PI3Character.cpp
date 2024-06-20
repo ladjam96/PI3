@@ -289,13 +289,11 @@ void API3Character::UseAbility(UBaseAbility* Ability)
 void API3Character::UseBlackHole()
 {
     UseAbility(BlackHoleAttack);
-    UE_LOG(LogTemp, Log, TEXT("Launched Blackhole with Damage: %f"), BlackHoleAttack->GetDamageAmount());
 }
 
 void API3Character::UseShockwave()
 {
     UseAbility(ShockwaveAttack);
-    UE_LOG(LogTemp, Log, TEXT("Launched Shockwave with Damage: %f"), ShockwaveAttack->GetDamageAmount());
 }
 
 
@@ -305,7 +303,6 @@ void API3Character::ShowGOMenu()
     if (GameOverMenuInstance)
     {
         GameOverMenuInstance->AddToViewport();
-        UE_LOG(LogTemp, Log, TEXT("Game Over Menu is now shown."));
 
         APlayerController* PlayerController = Cast<APlayerController>(GetController());
         if (PlayerController)
@@ -314,10 +311,6 @@ void API3Character::ShowGOMenu()
             PlayerController->bShowMouseCursor = true;
             PlayerController->SetInputMode(FInputModeUIOnly());
         }
-    }
-    else
-    {
-        UE_LOG(LogTemp, Warning, TEXT("Game Over Menu instance is null. Cannot show menu."));
     }
 }
 

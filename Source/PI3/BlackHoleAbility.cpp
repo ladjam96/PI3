@@ -1,5 +1,6 @@
 #include "BlackHoleAbility.h"
 #include "BlackholeActor.h"
+#include "EnemyCharacter.h"
 
 UBlackHoleAbility::UBlackHoleAbility()
 {
@@ -29,33 +30,17 @@ void UBlackHoleAbility::Activate()
 			if (ActiveBlackHole)
 			{
 				ActiveBlackHole->Initialize(SpawnLocation, Owner->GetActorForwardVector(), Range);
+				ActiveBlackHole->SetBlackHoleAbility(this);
 
-				// Apply damage to actors within the black hole's range
-				TArray<AActor*> OverlappingActors;
-				ActiveBlackHole->GetOverlappingActors(OverlappingActors, AActor::StaticClass());
+				bIsActivated = true;
+				ResetCooldown();
 
-				for (AActor* Actor : OverlappingActors)
-				{
-					if (Actor != Owner)
-					{
-						if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(Actor))
-						{
-							Enemy->TakeDamage(DamageAmount);
-						}
-					}
-				}
+				float Duration = 5.0f;
+				GetWorld()->GetTimerManager().SetTimer(DeactivationTimerHandle, this, &UBlackHoleAbility::Deactivate, Duration, false);
 			}
-
-			bIsActivated = true;
-			ResetCooldown();
-
-			float Duration = 5.0f;
-			GetWorld()->GetTimerManager().SetTimer(DeactivationTimerHandle, this, &UBlackHoleAbility::Deactivate, Duration, false);
 		}
 	}
 }
-
-
 
 void UBlackHoleAbility::Deactivate()
 {

@@ -1,4 +1,6 @@
 #include "BlackholeActor.h"
+
+#include "BlackHoleAbility.h"
 #include "EnemyCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -71,7 +73,7 @@ void ABlackholeActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
     if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(OtherActor))
     {
         ReduceEnemySpeed(EnemyCharacter);
-        UE_LOG(LogTemp, Warning, TEXT("Overlapped with Enemy Character"));
+        ApplyDamage(EnemyCharacter);
     }
 }
 
@@ -88,7 +90,19 @@ void ABlackholeActor::ReduceEnemySpeed(AEnemyCharacter* EnemyCharacter)
         GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [EnemyCharacter, OriginalSpeed]() {
             EnemyCharacter->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
         }, 15.0f, false);
+    }
+}
 
-        UE_LOG(LogTemp, Warning, TEXT("Reduced enemy speed"));
+void ABlackholeActor::SetBlackHoleAbility(UBlackHoleAbility* Ability)
+{
+    BlackHoleAbility = Ability;
+}
+
+void ABlackholeActor::ApplyDamage(AEnemyCharacter* EnemyCharacter)
+{
+    if (EnemyCharacter && BlackHoleAbility)
+    {
+        float DamageAmount = BlackHoleAbility->DamageAmount;
+        EnemyCharacter->TakeDamage(DamageAmount);
     }
 }
