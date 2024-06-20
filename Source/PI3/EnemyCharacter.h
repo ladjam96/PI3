@@ -43,6 +43,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	float Damage;
 
+	UPROPERTY()
+	float XP = 0.f;
+
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(float DamageAmount);
 

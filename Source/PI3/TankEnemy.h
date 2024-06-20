@@ -57,6 +57,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	float CurrentHealth;
 
+	UPROPERTY()
+	float XP = 0.f;
+
 protected:
 	API3Character* TargetPlayer;
 

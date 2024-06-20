@@ -23,7 +23,6 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// void DecreaseHealth();
-	// void IncreaseExp();
 
 	void Move(const FInputActionValue& Value);
 

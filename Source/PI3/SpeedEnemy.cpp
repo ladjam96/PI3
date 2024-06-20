@@ -40,6 +40,8 @@ ASpeedEnemy::ASpeedEnemy()
 	HealthBarWidgetComponent->SetupAttachment(RootComponent);
 	HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	HealthBarWidgetComponent->SetDrawSize(FVector2D(100, 20));
+
+	XP = 30.f;
 }
 
 void ASpeedEnemy::BeginPlay()
@@ -130,6 +132,11 @@ void ASpeedEnemy::Die()
         
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetCharacterMovement()->DisableMovement();
+
+		if (API3Character* PlayerCharacter = Cast<API3Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+		{
+			PlayerCharacter->GainExperience(XP);
+		}
     
 		SetLifeSpan(0.50f);
 		bIsAttacking = false;

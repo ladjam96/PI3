@@ -220,27 +220,6 @@ void API3Character::TakeDamage(float DamageAmount)
     }
 }
 
-// void API3Character::IncreaseExp()
-// {
-//     if (IsDead)
-//     {
-//         return;
-//     }
-//
-//     CurrentExperience += 10.f;
-//
-//     if (PlayerHUDClass && PlayerHUDInstance)
-//     {
-//         PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
-//         PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
-//     }
-//
-//     if (CurrentExperience >= ExperienceToNextLevel)
-//     {
-//         LevelUp();
-//     }
-// }
-
 void API3Character::GainExperience(float ExperienceAmount)
 {
     if (IsDead)

@@ -38,6 +38,8 @@ ATankEnemy::ATankEnemy()
 	HealthBarWidgetComponent->SetupAttachment(RootComponent);
 	HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
 	HealthBarWidgetComponent->SetDrawSize(FVector2D(100, 20));
+
+	XP = 70.f;
 }
 
 void ATankEnemy::BeginPlay()
@@ -128,6 +130,11 @@ void ATankEnemy::Die()
         
 		GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		GetCharacterMovement()->DisableMovement();
+
+		if (API3Character* PlayerCharacter = Cast<API3Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+		{
+			PlayerCharacter->GainExperience(XP);
+		}
     
 		SetLifeSpan(2.50f);
 		bIsAttacking = false;

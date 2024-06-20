@@ -36,7 +36,7 @@ AEnemyCharacter::AEnemyCharacter()
     HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
     HealthBarWidgetComponent->SetDrawSize(FVector2D(100, 20));
 
-   
+    XP = 10.f;
 }
 
 void AEnemyCharacter::BeginPlay()
@@ -64,7 +64,6 @@ void AEnemyCharacter::Tick(float DeltaTime)
 
         if (DistanceToPlayer <= AttackRange && GetWorld()->GetTimeSeconds() - LastAttackTime >= AttackCooldown && bIsDead == false)
         {
-            UE_LOG(LogTemp, Warning, TEXT("Enemy is within attack range."));
             AttackPlayer(Damage);
             LastAttackTime = GetWorld()->GetTimeSeconds();
         }
@@ -104,7 +103,6 @@ void AEnemyCharacter::AttackPlayer(float DamageAmount)
         bIsAttacking = true;
         PlayAnimMontage(AttackMontage);
         TargetPlayer->TakeDamage(DamageAmount);
-        //sound/particles...
     }
 }
 
@@ -116,26 +114,25 @@ void AEnemyCharacter::TakeDamage(float DamageAmount)
     {
         HealthBarWidget->UpdateHealthBar(CurrentHealth, MaxHealth);
     }
-
-   
-    
 }
 
 void AEnemyCharacter::Die()
 {
-    
-    
     if (DeathMontage && bIsDead == true)
     {
         PlayAnimMontage(DeathMontage);
         
         GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
         GetCharacterMovement()->DisableMovement();
-    
-        SetLifeSpan(0.7f);
+
+        if (API3Character* PlayerCharacter = Cast<API3Character>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)))
+        {
+            PlayerCharacter->GainExperience(XP);
+        }
+        
+        SetLifeSpan(1.f);
         bIsAttacking = false;
     }
-    // Sounds/particles...
 }
 
 FVector AEnemyCharacter::GetCharacterVelocity() const
