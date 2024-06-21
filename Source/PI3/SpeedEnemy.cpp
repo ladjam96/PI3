@@ -159,5 +159,14 @@ FRotator ASpeedEnemy::GetCharacterDirection() const
 	return FRotator::ZeroRotator;
 }
 
+void ASpeedEnemy::ScaleStatsWithPlayerLevel(int32 PlayerLevel)
+{
+	float ScalingFactor = 1.0f + (PlayerLevel * 0.05f);
+
+	Damage *= ScalingFactor;
+	MaxHealth *= ScalingFactor;
+
+	CurrentHealth = MaxHealth;
+}
 
 

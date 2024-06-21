@@ -49,10 +49,13 @@ void AEnemySpawnPoint::SpawnBossEnemy()
 
 void AEnemySpawnPoint::SpawnEnemy(TSubclassOf<ACharacter> EnemyClass)
 {
-	if (EnemyClass == nullptr) return;
+	if (EnemyClass == nullptr)
+		return;
 
 	APawn* PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-	if (PlayerPawn == nullptr) return;
+	
+	if (PlayerPawn == nullptr)
+		return;
 
 	FVector SpawnLocation;
 	bool bValidSpawnLocation = false;
@@ -62,10 +65,10 @@ void AEnemySpawnPoint::SpawnEnemy(TSubclassOf<ACharacter> EnemyClass)
 	while (!bValidSpawnLocation && Attempts < MaxAttempts)
 	{
 		FVector2D RandPointInCircle = FMath::RandPointInCircle(SpawnRadius);
-		SpawnLocation = PlayerPawn->GetActorLocation() + FVector(RandPointInCircle, 0.0f); // Convertir FVector2D a FVector
+		SpawnLocation = PlayerPawn->GetActorLocation() + FVector(RandPointInCircle, 0.0f);
 		Attempts++;
 		
-		if (FVector::Dist(SpawnLocation, PlayerPawn->GetActorLocation()) > 900.0f) // Asegúrate de que los enemigos no se generen demasiado cerca del jugador
+		if (FVector::Dist(SpawnLocation, PlayerPawn->GetActorLocation()) > 500.0f) 
 		{
 			bValidSpawnLocation = true;
 		}
@@ -74,18 +77,6 @@ void AEnemySpawnPoint::SpawnEnemy(TSubclassOf<ACharacter> EnemyClass)
 	if (bValidSpawnLocation)
 	{
 		ACharacter* SpawnedEnemy = GetWorld()->SpawnActor<ACharacter>(EnemyClass, SpawnLocation, FRotator::ZeroRotator);
-		if (SpawnedEnemy)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Spawned enemy of class: %s at location: %s"), *EnemyClass->GetName(), *SpawnLocation.ToString());
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Failed to spawn enemy of class: %s"), *EnemyClass->GetName());
-		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to find a valid spawn location"));
 	}
 }
 
