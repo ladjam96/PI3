@@ -25,6 +25,8 @@ void AWorldGeneration::BeginPlay()
             FMath::FloorToInt(Player->GetActorLocation().Y / (YVertexCount * CellSize))
         );
 
+        UE_LOG(LogTemp, Log, TEXT("Initial Player Section: %s"), *LastPlayerSection.ToString());
+
         GenerateTerrain(LastPlayerSection.X, LastPlayerSection.Y);
     }
 }
@@ -52,6 +54,11 @@ void AWorldGeneration::FindPlayer()
         if (PlayerController)
         {
             Player = PlayerController->GetPawn();
+            UE_LOG(LogTemp, Log, TEXT("Player found: %s"), *Player->GetName());
+        }
+        else
+        {
+            UE_LOG(LogTemp, Warning, TEXT("Player controller not found"));
         }
     }
 }
@@ -59,6 +66,8 @@ void AWorldGeneration::FindPlayer()
 void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int SectionIndexY)
 {
     FVector Offset = FVector(SectionIndexX * (XVertexCount - 1) * CellSize, SectionIndexY * (YVertexCount - 1) * CellSize, 0.f);
+
+    UE_LOG(LogTemp, Log, TEXT("Generating Terrain at Section (%d, %d) with Offset %s"), SectionIndexX, SectionIndexY, *Offset.ToString());
 
     TArray<FVector> Vertices;
     TArray<FVector2D> UVs;
@@ -130,8 +139,11 @@ void AWorldGeneration::CheckAndGenerateNewTerrain()
 
     if (CurrentPlayerSection != LastPlayerSection)
     {
+        UE_LOG(LogTemp, Log, TEXT("Player moved to new section: %s"), *CurrentPlayerSection.ToString());
+
         GenerateTerrain(CurrentPlayerSection.X, CurrentPlayerSection.Y);
         
+        // Generate terrain for adjacent sections
         GenerateTerrain(CurrentPlayerSection.X + 1, CurrentPlayerSection.Y);
         GenerateTerrain(CurrentPlayerSection.X - 1, CurrentPlayerSection.Y);
         GenerateTerrain(CurrentPlayerSection.X, CurrentPlayerSection.Y + 1);
