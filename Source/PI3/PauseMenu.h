@@ -1,24 +1,19 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "PauseMenu.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class PI3_API UPauseMenu : public UUserWidget
 {
 	GENERATED_BODY()
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* ContinueButton;
+	class UButton* ContinueButton = nullptr;
 	
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* RestartButton;
+	class UButton* RestartButton = nullptr;
 
 	virtual void NativeConstruct() override;
 

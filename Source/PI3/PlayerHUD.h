@@ -23,32 +23,32 @@ public:
 	void UpdateShockwaveBar(float Progress);
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* HealthBar;
+	class UProgressBar* HealthBar = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* HealthText;
+	class UTextBlock* HealthText = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* ExpBar;
+	class UProgressBar* ExpBar = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* ExpText;
+	class UTextBlock* ExpText = nullptr;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UTextBlock* LvlText;
+	class UTextBlock* LvlText = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* BlackholeBar;
+	class UProgressBar* BlackholeBar = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* ShockwaveBar;
+	class UProgressBar* ShockwaveBar = nullptr;
 	
 	//Pause Menu
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* PauseButton;
+	class UButton* PauseButton = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<class UUserWidget> BP_PauseMenu;
+	TSubclassOf<class UUserWidget> BP_PauseMenu = nullptr;
 
 	UFUNCTION()
 	void OnPauseClick();

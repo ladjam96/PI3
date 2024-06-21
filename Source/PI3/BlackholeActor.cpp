@@ -122,7 +122,8 @@ void ABlackholeActor::ReduceEnemySpeed(AActor* EnemyActor)
         TankEnemy->GetCharacterMovement()->MaxWalkSpeed = ReducedSpeed;
 
         FTimerHandle SpeedRestoreTimerHandle;
-        GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [TankEnemy, OriginalSpeed]() {
+        GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [TankEnemy, OriginalSpeed]()
+        {
             TankEnemy->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
         }, 15.0f, false);
     }

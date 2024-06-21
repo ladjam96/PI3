@@ -4,7 +4,7 @@
 #include "BaseAbility.h"
 #include "BaseAttack.generated.h"
 
-class ABasicAttackActor; // Forward declaration of ABasicAttackActor class
+class ABasicAttackActor;
 
 UCLASS()
 class PI3_API UBaseAttack : public UBaseAbility

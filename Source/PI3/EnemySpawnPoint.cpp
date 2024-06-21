@@ -16,7 +16,6 @@ AEnemySpawnPoint::AEnemySpawnPoint()
 	BossEnemySpawnInterval = 60.0f;
 }
 
-
 void AEnemySpawnPoint::BeginPlay()
 {
 	Super::BeginPlay();
@@ -79,5 +78,3 @@ void AEnemySpawnPoint::SpawnEnemy(TSubclassOf<ACharacter> EnemyClass)
 		ACharacter* SpawnedEnemy = GetWorld()->SpawnActor<ACharacter>(EnemyClass, SpawnLocation, FRotator::ZeroRotator);
 	}
 }
-
-

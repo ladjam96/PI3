@@ -4,7 +4,6 @@
 #include "Components/ActorComponent.h"
 #include "BaseAbility.generated.h"
 
-
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class PI3_API UBaseAbility : public UActorComponent
 {
@@ -41,5 +40,4 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-		
 };

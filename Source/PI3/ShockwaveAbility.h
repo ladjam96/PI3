@@ -40,6 +40,6 @@ private:
 
     void DeactivateNiagaraComponent();
 
-    FVector ActivationLocation;
+    FVector ActivationLocation {0};
     bool bIsActivated = false;
 };

@@ -1,29 +1,20 @@
-
-
-
 #include "SpeedEnemy.h"
-
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
-
 ASpeedEnemy::ASpeedEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	PrimaryActorTick.bCanEverTick = true;
-
+	
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Movement
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 800.0f;
 
-	// Combat
 	bIsAttacking = false;
 	bIsDead = false;
 	AttackRange = 120.0f;
@@ -31,11 +22,9 @@ ASpeedEnemy::ASpeedEnemy()
 	LastAttackTime = 0.0f;
 	Damage = 50.f;
 
-	// Health
 	MaxHealth = 50.0f;
 	CurrentHealth = MaxHealth;
 
-	// Health Bar Widget
 	HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
 	HealthBarWidgetComponent->SetupAttachment(RootComponent);
 	HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);
@@ -69,7 +58,6 @@ void ASpeedEnemy::Tick(float DeltaTime)
 
 		if (DistanceToPlayer <= AttackRange && GetWorld()->GetTimeSeconds() - LastAttackTime >= AttackCooldown && bIsDead == false)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Enemy is within attack range."));
 			AttackPlayer(Damage);
 			LastAttackTime = GetWorld()->GetTimeSeconds();
 		}
@@ -110,7 +98,6 @@ void ASpeedEnemy::AttackPlayer(float DamageAmount)
 		bIsAttacking = true;
 		PlayAnimMontage(AttackMontage);
 		TargetPlayer->TakeDamage(DamageAmount);
-		//sound/particles...
 	}
 }
 
@@ -141,7 +128,6 @@ void ASpeedEnemy::Die()
 		SetLifeSpan(0.50f);
 		bIsAttacking = false;
 	}
-	// Sounds/particles...
 }
 
 FVector ASpeedEnemy::GetCharacterVelocity() const

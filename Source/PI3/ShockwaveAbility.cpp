@@ -1,5 +1,4 @@
 #include "ShockwaveAbility.h"
-
 #include "EnemyCharacter.h"
 #include "SpeedEnemy.h"
 #include "TankEnemy.h"

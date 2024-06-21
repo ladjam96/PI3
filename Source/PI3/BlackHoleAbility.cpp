@@ -1,6 +1,5 @@
 #include "BlackHoleAbility.h"
 #include "BlackholeActor.h"
-#include "EnemyCharacter.h"
 
 UBlackHoleAbility::UBlackHoleAbility()
 {

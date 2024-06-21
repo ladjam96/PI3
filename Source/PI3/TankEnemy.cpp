@@ -9,28 +9,23 @@
 ATankEnemy::ATankEnemy()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
-	PrimaryActorTick.bCanEverTick = true;
-
+	
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 
-	// Movement
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
 	GetCharacterMovement()->MaxWalkSpeed = 200.0f;
 
-	// Combat
 	bIsAttacking = false;
 	bIsDead = false;
 	AttackRange = 300.0f;
 	AttackCooldown = 5.0f;
 	LastAttackTime = 0.0f;
-	Damage = 500.f;
+	Damage = 100.f;
 
-	// Health
-	MaxHealth = 1000.0f;
+	MaxHealth = 500.0f;
 	CurrentHealth = MaxHealth;
 
 	// Health Bar Widget
@@ -67,7 +62,6 @@ void ATankEnemy::Tick(float DeltaTime)
 
 		if (DistanceToPlayer <= AttackRange && GetWorld()->GetTimeSeconds() - LastAttackTime >= AttackCooldown && bIsDead == false)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Enemy is within attack range."));
 			AttackPlayer(Damage);
 			LastAttackTime = GetWorld()->GetTimeSeconds();
 		}
@@ -108,7 +102,6 @@ void ATankEnemy::AttackPlayer(float DamageAmount)
 		bIsAttacking = true;
 		PlayAnimMontage(AttackMontage);
 		TargetPlayer->TakeDamage(DamageAmount);
-		//sound/particles...
 	}
 }
 
@@ -139,7 +132,6 @@ void ATankEnemy::Die()
 		SetLifeSpan(2.50f);
 		bIsAttacking = false;
 	}
-	// Sounds/particles...
 }
 
 FVector ATankEnemy::GetCharacterVelocity() const

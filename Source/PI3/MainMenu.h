@@ -25,9 +25,9 @@ public:
 	void OnCloseControlsClicked();
 
 private:
-	UPROPERTY(EditAnywhere, Category="Widgets")
-	TSubclassOf<UUserWidget> ControlsOverlayClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UUserWidget> ControlsOverlayClass = nullptr;
 
 	UPROPERTY()
-	UUserWidget* ControlsOverlay;
+	UUserWidget* ControlsOverlay = nullptr;
 };

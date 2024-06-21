@@ -13,34 +13,30 @@ class PI3_API ATankEnemy : public ACharacter
 	GENERATED_BODY()
 
 public:
+
 	ATankEnemy();
-
-protected:
-	virtual void BeginPlay() override;
-
-public:	
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere)
-	bool bIsAttacking;
+	bool bIsAttacking = false;
 
 	UPROPERTY(EditAnywhere)
-	bool bIsDead;
+	bool bIsDead = false;
 
 	UPROPERTY(EditAnywhere)
-	float AttackRange;
+	float AttackRange = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float AttackCooldown;
+	float AttackCooldown = 0.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UAnimMontage* AttackMontage;
+	UAnimMontage* AttackMontage = nullptr;
 
 	UPROPERTY(EditAnywhere)
-	UAnimMontage* DeathMontage;
+	UAnimMontage* DeathMontage = nullptr;
 
 	UPROPERTY(EditAnywhere)
-	float Damage;
+	float Damage = 0.f;
 
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(float DamageAmount);
@@ -50,28 +46,32 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FRotator GetCharacterDirection() const;
+
+	UFUNCTION()
 	void ScaleStatsWithPlayerLevel(int32 PlayerLevel);
 
 	UPROPERTY(EditAnywhere)
-	float MaxHealth;
+	float MaxHealth = 0.f;
 	
 	UPROPERTY(EditAnywhere)
-	float CurrentHealth;
+	float CurrentHealth = 0.f;
 
 	UPROPERTY()
 	float XP = 0.f;
 
 protected:
-	API3Character* TargetPlayer;
+	virtual void BeginPlay() override;
 
-	float LastAttackTime;
+	API3Character* TargetPlayer = nullptr;
+
+	float LastAttackTime = 0.f;
 
 	void Move();
 	void AttackPlayer(float DamageAmount);
 	void Die();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
-	class UWidgetComponent* HealthBarWidgetComponent;
+	class UWidgetComponent* HealthBarWidgetComponent = nullptr;
 
-	UEnemyHealthBar* HealthBarWidget;
+	UEnemyHealthBar* HealthBarWidget = nullptr;
 };

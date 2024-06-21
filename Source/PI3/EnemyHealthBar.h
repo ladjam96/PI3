@@ -15,5 +15,5 @@ public:
 	void UpdateHealthBar(float CurrentHealth, float MaxHealth);
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (BindWidget))
-	class UProgressBar* HealthBar;
+	class UProgressBar* HealthBar = nullptr;
 };

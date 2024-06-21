@@ -13,12 +13,10 @@ AEnemyCharacter::AEnemyCharacter()
     bUseControllerRotationYaw = false;
     bUseControllerRotationRoll = false;
 
-    // Movement
     GetCharacterMovement()->bOrientRotationToMovement = true;
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f);
     GetCharacterMovement()->MaxWalkSpeed = 400.0f;
 
-    // Combat
     bIsAttacking = false;
     bIsDead = false;
     AttackRange = 100.0f;
@@ -26,11 +24,9 @@ AEnemyCharacter::AEnemyCharacter()
     LastAttackTime = 0.0f;
     Damage = 20.f;
 
-    // Health
     MaxHealth = 100.0f;
     CurrentHealth = MaxHealth;
 
-    // Health Bar Widget
     HealthBarWidgetComponent = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthBarWidget"));
     HealthBarWidgetComponent->SetupAttachment(RootComponent);
     HealthBarWidgetComponent->SetWidgetSpace(EWidgetSpace::Screen);

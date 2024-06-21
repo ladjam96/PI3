@@ -26,7 +26,7 @@ public:
 	float SphereSpeed = 0.f;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ABlackholeActor> BlackHoleActorClass;
+	TSubclassOf<ABlackholeActor> BlackHoleActorClass = nullptr;
 
 private:
 	ABlackholeActor* ActiveBlackHole = nullptr;

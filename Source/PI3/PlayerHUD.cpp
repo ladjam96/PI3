@@ -8,7 +8,6 @@
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 
-//Pause Game
 void UPlayerHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -98,7 +97,6 @@ void UPlayerHUD::UpdateShockwaveBar(float Progress)
 		ShockwaveBar->SetPercent(FMath::Clamp(Progress / 100.f, 0.0f, 1.0f));
 	}
 }
-
 
 //Pause Game
 void UPlayerHUD::OnPauseClick()

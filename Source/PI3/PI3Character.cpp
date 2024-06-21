@@ -40,7 +40,6 @@ API3Character::API3Character()
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
     FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
     FollowCamera->bUsePawnControlRotation = false;
-    // FollowCamera->SetProjectionMode(ECameraProjectionMode::Orthographic);
     FollowCamera->SetRelativeRotation(FRotator(-75.f, 0.f, 0.f));
     FollowCamera->SetOrthoWidth(3500.f);
 

@@ -15,13 +15,13 @@ class PI3_API UImproveAbilities : public UUserWidget
 
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* ImproveBlackhole;
+	class UButton* ImproveBlackhole = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* ImproveShockwave;
+	class UButton* ImproveShockwave = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-	class UButton* ImproveBasicAttack;
+	class UButton* ImproveBasicAttack = nullptr;
 
 	UFUNCTION(BlueprintCallable)
 	void InitializeAbilities(UBlackHoleAbility* InBlackHoleAbility, UShockwaveAbility* InShockwaveAbility, UBaseAttack* InBaseAttack);
