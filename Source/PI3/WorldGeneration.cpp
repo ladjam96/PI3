@@ -21,11 +21,9 @@ void AWorldGeneration::BeginPlay()
     if (Player.IsValid())
     {
         LastPlayerSection = FVector2D(
-            FMath::FloorToInt(Player->GetActorLocation().X / (XVertexCount * CellSize)),
-            FMath::FloorToInt(Player->GetActorLocation().Y / (YVertexCount * CellSize))
+            FMath::FloorToInt(Player->GetActorLocation().X / ((XVertexCount - 1) * CellSize)),
+            FMath::FloorToInt(Player->GetActorLocation().Y / ((YVertexCount - 1) * CellSize))
         );
-
-        UE_LOG(LogTemp, Log, TEXT("Initial Player Section: %s"), *LastPlayerSection.ToString());
 
         GenerateTerrain(LastPlayerSection.X, LastPlayerSection.Y);
     }
@@ -54,11 +52,14 @@ void AWorldGeneration::FindPlayer()
         if (PlayerController)
         {
             Player = PlayerController->GetPawn();
-            UE_LOG(LogTemp, Log, TEXT("Player found: %s"), *Player->GetName());
-        }
-        else
-        {
-            UE_LOG(LogTemp, Warning, TEXT("Player controller not found"));
+            if (Player.IsValid())
+            {
+                UE_LOG(LogTemp, Warning, TEXT("Player found: %s"), *Player->GetName());
+            }
+            else
+            {
+                UE_LOG(LogTemp, Error, TEXT("Player not found!"));
+            }
         }
     }
 }
@@ -67,7 +68,7 @@ void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int Sectio
 {
     FVector Offset = FVector(SectionIndexX * (XVertexCount - 1) * CellSize, SectionIndexY * (YVertexCount - 1) * CellSize, 0.f);
 
-    UE_LOG(LogTemp, Log, TEXT("Generating Terrain at Section (%d, %d) with Offset %s"), SectionIndexX, SectionIndexY, *Offset.ToString());
+    UE_LOG(LogTemp, Warning, TEXT("Generating Terrain at Section (%d, %d) with Offset (%f, %f, %f)"), SectionIndexX, SectionIndexY, Offset.X, Offset.Y, Offset.Z);
 
     TArray<FVector> Vertices;
     TArray<FVector2D> UVs;
@@ -122,32 +123,45 @@ void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int Sectio
     {
         TerrainMesh->SetMaterial(MeshSectionIndex, TerrainMaterial);
     }
+
+    UE_LOG(LogTemp, Warning, TEXT("Created Mesh Section %d"), MeshSectionIndex);
+
     MeshSectionIndex++;
 }
 
 float AWorldGeneration::GetHeight(FVector2D Location)
 {
-    return 0.0f;
+    return 0.0f; // Flat terrain for now
 }
 
 void AWorldGeneration::CheckAndGenerateNewTerrain()
 {
+    if (!Player.IsValid())
+    {
+        return;
+    }
+
     FVector2D CurrentPlayerSection = FVector2D(
-        FMath::FloorToInt(Player->GetActorLocation().X / (XVertexCount * CellSize)),
-        FMath::FloorToInt(Player->GetActorLocation().Y / (YVertexCount * CellSize))
+        FMath::FloorToInt(Player->GetActorLocation().X / ((XVertexCount - 1) * CellSize)),
+        FMath::FloorToInt(Player->GetActorLocation().Y / ((YVertexCount - 1) * CellSize))
     );
+
+    UE_LOG(LogTemp, Warning, TEXT("Player Section: (%f, %f)"), CurrentPlayerSection.X, CurrentPlayerSection.Y);
 
     if (CurrentPlayerSection != LastPlayerSection)
     {
-        UE_LOG(LogTemp, Log, TEXT("Player moved to new section: %s"), *CurrentPlayerSection.ToString());
+        UE_LOG(LogTemp, Warning, TEXT("Generating new terrain sections around (%f, %f)"), CurrentPlayerSection.X, CurrentPlayerSection.Y);
 
+        // Generate the central section and the surrounding sections
         GenerateTerrain(CurrentPlayerSection.X, CurrentPlayerSection.Y);
-        
-        // Generate terrain for adjacent sections
         GenerateTerrain(CurrentPlayerSection.X + 1, CurrentPlayerSection.Y);
         GenerateTerrain(CurrentPlayerSection.X - 1, CurrentPlayerSection.Y);
         GenerateTerrain(CurrentPlayerSection.X, CurrentPlayerSection.Y + 1);
         GenerateTerrain(CurrentPlayerSection.X, CurrentPlayerSection.Y - 1);
+        GenerateTerrain(CurrentPlayerSection.X + 1, CurrentPlayerSection.Y + 1);
+        GenerateTerrain(CurrentPlayerSection.X - 1, CurrentPlayerSection.Y - 1);
+        GenerateTerrain(CurrentPlayerSection.X + 1, CurrentPlayerSection.Y - 1);
+        GenerateTerrain(CurrentPlayerSection.X - 1, CurrentPlayerSection.Y + 1);
 
         LastPlayerSection = CurrentPlayerSection;
     }
