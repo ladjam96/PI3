@@ -19,7 +19,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DestroyActiveBlackHole();
 
-protected:
 	UPROPERTY(EditAnywhere)
 	float Range = 0.f;
 

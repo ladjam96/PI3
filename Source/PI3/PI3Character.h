@@ -56,6 +56,9 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TSubclassOf<class UGameOverMenu> GameOverMenuClass;
+	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	TSubclassOf<UUserWidget> ImproveAbilitiesClass;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBlackHoleAbility* BlackHoleAttack;
@@ -100,6 +103,9 @@ protected:
 
 	UFUNCTION()
 	void LevelUp();
+
+	UFUNCTION()
+	void ShowImproveAbilitiesMenu();
 
 	UFUNCTION()
 	float CalculateExperienceToNextLevel() const;

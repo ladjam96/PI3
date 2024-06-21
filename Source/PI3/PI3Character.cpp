@@ -11,6 +11,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "GameOverMenu.h"
+#include "ImproveAbilities.h"
 #include "InputActionValue.h"
 #include "PlayerHUD.h"
 
@@ -252,6 +253,28 @@ void API3Character::LevelUp()
         PlayerHUDInstance->UpdateLevelText(CurrentLevel);
         PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
         PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
+    }
+
+    ShowImproveAbilitiesMenu();
+}
+
+void API3Character::ShowImproveAbilitiesMenu()
+{
+    if (ImproveAbilitiesClass)
+    {
+        UImproveAbilities* ImproveAbilitiesInstance = CreateWidget<UImproveAbilities>(GetWorld(), ImproveAbilitiesClass);
+        if (ImproveAbilitiesInstance)
+        {
+            ImproveAbilitiesInstance->AddToViewport();
+            ImproveAbilitiesInstance->InitializeAbilities(BlackHoleAttack, ShockwaveAttack, BaseAttack);
+            ImproveAbilitiesInstance->SetOwningCharacter(this);
+
+            APlayerController* PlayerController = Cast<APlayerController>(GetController());
+            if (PlayerController)
+            {
+                PlayerController->bShowMouseCursor = true;
+            }
+        }
     }
 }
 

@@ -15,7 +15,6 @@ public:
 
     virtual void Activate() override;
 
-protected:
     UPROPERTY(EditAnywhere)
     float Force = 0.f;
 

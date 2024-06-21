@@ -20,7 +20,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DestroyActiveSphere();
 
-protected:
 	UPROPERTY(EditAnywhere)
 	float Range = 0.f;
 
