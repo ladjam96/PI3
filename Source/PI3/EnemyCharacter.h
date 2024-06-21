@@ -21,26 +21,25 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	// Combat
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere)
 	bool bIsAttacking;
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere)
 	bool bIsDead;
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere)
 	float AttackRange;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float AttackCooldown;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UAnimMontage* AttackMontage;
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere)
 	UAnimMontage* DeathMontage;
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere)
 	float Damage;
 
 	UPROPERTY()
@@ -54,13 +53,15 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FRotator GetCharacterDirection() const;
-	
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	void ScaleStatsWithPlayerLevel(int32 PlayerLevel);
+
+	UPROPERTY(EditAnywhere)
 	float MaxHealth;
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere)
 	float CurrentHealth;
 
 protected:
+	
 	API3Character* TargetPlayer;
 
 	float LastAttackTime;
@@ -69,7 +70,7 @@ protected:
 	void AttackPlayer(float DamageAmount);
 	void Die();
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "UI")
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UWidgetComponent* HealthBarWidgetComponent;
 
 	UEnemyHealthBar* HealthBarWidget;

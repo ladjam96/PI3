@@ -67,9 +67,7 @@ void AWorldGeneration::FindPlayer()
 void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int SectionIndexY)
 {
     FVector Offset = FVector(SectionIndexX * (XVertexCount - 1) * CellSize, SectionIndexY * (YVertexCount - 1) * CellSize, 0.f);
-
-    UE_LOG(LogTemp, Warning, TEXT("Generating Terrain at Section (%d, %d) with Offset (%f, %f, %f)"), SectionIndexX, SectionIndexY, Offset.X, Offset.Y, Offset.Z);
-
+    
     TArray<FVector> Vertices;
     TArray<FVector2D> UVs;
     TArray<int32> Triangles;
@@ -123,15 +121,13 @@ void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int Sectio
     {
         TerrainMesh->SetMaterial(MeshSectionIndex, TerrainMaterial);
     }
-
-    UE_LOG(LogTemp, Warning, TEXT("Created Mesh Section %d"), MeshSectionIndex);
-
+    
     MeshSectionIndex++;
 }
 
 float AWorldGeneration::GetHeight(FVector2D Location)
 {
-    return 0.0f; // Flat terrain for now
+    return 0.0f;
 }
 
 void AWorldGeneration::CheckAndGenerateNewTerrain()
@@ -145,13 +141,9 @@ void AWorldGeneration::CheckAndGenerateNewTerrain()
         FMath::FloorToInt(Player->GetActorLocation().X / ((XVertexCount - 1) * CellSize)),
         FMath::FloorToInt(Player->GetActorLocation().Y / ((YVertexCount - 1) * CellSize))
     );
-
-    UE_LOG(LogTemp, Warning, TEXT("Player Section: (%f, %f)"), CurrentPlayerSection.X, CurrentPlayerSection.Y);
-
+    
     if (CurrentPlayerSection != LastPlayerSection)
     {
-        UE_LOG(LogTemp, Warning, TEXT("Generating new terrain sections around (%f, %f)"), CurrentPlayerSection.X, CurrentPlayerSection.Y);
-
         // Generate the central section and the surrounding sections
         GenerateTerrain(CurrentPlayerSection.X, CurrentPlayerSection.Y);
         GenerateTerrain(CurrentPlayerSection.X + 1, CurrentPlayerSection.Y);
