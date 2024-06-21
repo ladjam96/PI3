@@ -128,9 +128,9 @@ void API3Character::Tick(float DeltaTime)
     {
         BaseAttack->UpdateCooldown(DeltaTime);
     }
-
+    
     CheckIfDead();
-
+    
     if(IsDead)
     {
         FTimerHandle TimerHandle;
@@ -196,9 +196,10 @@ void API3Character::Move(const FInputActionValue& Value)
 
 void API3Character::TakeDamage(float DamageAmount)
 {
-    WasHit = true;
+
+    WasHit = !WasHit;
     
-    CurrentHealth -= DamageAmount;
+    CurrentHealth = FMath::Max(CurrentHealth - DamageAmount, 0.0f);
 
     if(CurrentHealth <= 0)
     {
