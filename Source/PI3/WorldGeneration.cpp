@@ -9,7 +9,7 @@ AWorldGeneration::AWorldGeneration()
     PrimaryActorTick.bCanEverTick = true;
 
     TerrainMesh = CreateDefaultSubobject<UProceduralMeshComponent>(TEXT("TerrainMesh"));
-    TerrainMesh->SetupAttachment(GetRootComponent()); 
+    TerrainMesh->SetupAttachment(GetRootComponent());
 }
 
 void AWorldGeneration::BeginPlay()
@@ -58,51 +58,53 @@ void AWorldGeneration::FindPlayer()
 
 void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int SectionIndexY)
 {
-    FVector Offset = FVector(SectionIndexX * (XVertexCount - 1), SectionIndexY * (YVertexCount - 1), 0.f) * CellSize;
+    FVector Offset = FVector(SectionIndexX * (XVertexCount - 1) * CellSize, SectionIndexY * (YVertexCount - 1) * CellSize, 0.f);
 
     TArray<FVector> Vertices;
-    FVector Vertex;
-
     TArray<FVector2D> UVs;
-    FVector2D UV;
-
     TArray<int32> Triangles;
-
     TArray<FVector> Normals;
     TArray<FProcMeshTangent> Tangents;
 
     // Vertices and UVs
-    for (int32 iVY = 0; iVY <= YVertexCount; iVY++)
+    for (int32 iVY = 0; iVY < YVertexCount; ++iVY)
     {
-        for (int32 iVX = 0; iVX <= XVertexCount; iVX++)
+        for (int32 iVX = 0; iVX < XVertexCount; ++iVX)
         {
+            FVector Vertex;
             Vertex.X = iVX * CellSize + Offset.X;
             Vertex.Y = iVY * CellSize + Offset.Y;
             Vertex.Z = GetHeight(FVector2D(Vertex.X, Vertex.Y));
             Vertices.Add(Vertex);
 
-            UV.X = iVX / (float)XVertexCount;
-            UV.Y = iVY / (float)YVertexCount;
+            FVector2D UV;
+            UV.X = static_cast<float>(iVX + SectionIndexX * (XVertexCount - 1)) / (NumOfSectionX * (XVertexCount - 1));
+            UV.Y = static_cast<float>(iVY + SectionIndexY * (YVertexCount - 1)) / (NumOfSectionY * (YVertexCount - 1));
             UVs.Add(UV);
         }
     }
 
     // Triangles
-    for (int32 iTY = 0; iTY < YVertexCount; iTY++)
+    for (int32 iTY = 0; iTY < YVertexCount - 1; ++iTY)
     {
-        for (int32 iTX = 0; iTX < XVertexCount; iTX++)
+        for (int32 iTX = 0; iTX < XVertexCount - 1; ++iTX)
         {
-            Triangles.Add(iTX + iTY * (XVertexCount + 1));
-            Triangles.Add(iTX + (iTY + 1) * (XVertexCount + 1));
-            Triangles.Add(iTX + iTY * (XVertexCount + 1) + 1);
+            int32 V0 = iTX + iTY * XVertexCount;
+            int32 V1 = V0 + 1;
+            int32 V2 = V0 + XVertexCount;
+            int32 V3 = V2 + 1;
 
-            Triangles.Add(iTX + (iTY + 1) * (XVertexCount + 1));
-            Triangles.Add(iTX + (iTY + 1) * (XVertexCount + 1) + 1);
-            Triangles.Add(iTX + iTY * (XVertexCount + 1) + 1);
+            Triangles.Add(V0);
+            Triangles.Add(V2);
+            Triangles.Add(V1);
+
+            Triangles.Add(V1);
+            Triangles.Add(V2);
+            Triangles.Add(V3);
         }
     }
 
-    // Calculate Normals
+    // Calculate Normals and Tangents
     UKismetProceduralMeshLibrary::CalculateTangentsForMesh(Vertices, Triangles, UVs, Normals, Tangents);
 
     // Create Mesh
@@ -116,7 +118,7 @@ void AWorldGeneration::GenerateTerrain(const int SectionIndexX, const int Sectio
 
 float AWorldGeneration::GetHeight(FVector2D Location)
 {
-    return 0.0f; // Placeholder for height calculation
+    return 0.0f;
 }
 
 void AWorldGeneration::CheckAndGenerateNewTerrain()
@@ -129,8 +131,7 @@ void AWorldGeneration::CheckAndGenerateNewTerrain()
     if (CurrentPlayerSection != LastPlayerSection)
     {
         GenerateTerrain(CurrentPlayerSection.X, CurrentPlayerSection.Y);
-
-        // Optionally generate surrounding sections
+        
         GenerateTerrain(CurrentPlayerSection.X + 1, CurrentPlayerSection.Y);
         GenerateTerrain(CurrentPlayerSection.X - 1, CurrentPlayerSection.Y);
         GenerateTerrain(CurrentPlayerSection.X, CurrentPlayerSection.Y + 1);
