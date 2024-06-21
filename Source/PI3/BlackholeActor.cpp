@@ -1,6 +1,8 @@
 #include "BlackholeActor.h"
 #include "BlackHoleAbility.h"
 #include "EnemyCharacter.h"
+#include "SpeedEnemy.h"
+#include "TankEnemy.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/Engine.h"
@@ -67,16 +69,28 @@ void ABlackholeActor::Initialize(const FVector& StartLocation, const FVector& Di
 
 void ABlackholeActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(OtherActor))
+    if (OtherActor && (OtherActor != this))
     {
-        ReduceEnemySpeed(EnemyCharacter);
-        ApplyDamage(EnemyCharacter);
+        if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(OtherActor))
+        {
+            ReduceEnemySpeed(EnemyCharacter);
+        }
+        else if (ASpeedEnemy* SpeedEnemy = Cast<ASpeedEnemy>(OtherActor))
+        {
+            ReduceEnemySpeed(SpeedEnemy);
+        }
+        else if (ATankEnemy* TankEnemy = Cast<ATankEnemy>(OtherActor))
+        {
+            ReduceEnemySpeed(TankEnemy);
+        }
+
+        ApplyDamage(OtherActor);
     }
 }
 
-void ABlackholeActor::ReduceEnemySpeed(AEnemyCharacter* EnemyCharacter)
+void ABlackholeActor::ReduceEnemySpeed(AActor* EnemyActor)
 {
-    if (EnemyCharacter)
+    if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(EnemyActor))
     {
         float OriginalSpeed = EnemyCharacter->GetCharacterMovement()->MaxWalkSpeed;
         float ReducedSpeed = OriginalSpeed * 0.5f;
@@ -88,6 +102,30 @@ void ABlackholeActor::ReduceEnemySpeed(AEnemyCharacter* EnemyCharacter)
             EnemyCharacter->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
         }, 15.0f, false);
     }
+    else if (ASpeedEnemy* SpeedEnemy = Cast<ASpeedEnemy>(EnemyActor))
+    {
+        float OriginalSpeed = SpeedEnemy->GetCharacterMovement()->MaxWalkSpeed;
+        float ReducedSpeed = OriginalSpeed * 0.5f;
+
+        SpeedEnemy->GetCharacterMovement()->MaxWalkSpeed = ReducedSpeed;
+
+        FTimerHandle SpeedRestoreTimerHandle;
+        GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [SpeedEnemy, OriginalSpeed]() {
+            SpeedEnemy->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
+        }, 15.0f, false);
+    }
+    else if (ATankEnemy* TankEnemy = Cast<ATankEnemy>(EnemyActor))
+    {
+        float OriginalSpeed = TankEnemy->GetCharacterMovement()->MaxWalkSpeed;
+        float ReducedSpeed = OriginalSpeed * 0.5f;
+
+        TankEnemy->GetCharacterMovement()->MaxWalkSpeed = ReducedSpeed;
+
+        FTimerHandle SpeedRestoreTimerHandle;
+        GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [TankEnemy, OriginalSpeed]() {
+            TankEnemy->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
+        }, 15.0f, false);
+    }
 }
 
 void ABlackholeActor::SetBlackHoleAbility(UBlackHoleAbility* Ability)
@@ -95,11 +133,23 @@ void ABlackholeActor::SetBlackHoleAbility(UBlackHoleAbility* Ability)
     BlackHoleAbility = Ability;
 }
 
-void ABlackholeActor::ApplyDamage(AEnemyCharacter* EnemyCharacter)
+void ABlackholeActor::ApplyDamage(AActor* EnemyActor)
 {
-    if (EnemyCharacter && BlackHoleAbility)
+    if (BlackHoleAbility)
     {
         float DamageAmount = BlackHoleAbility->DamageAmount;
-        EnemyCharacter->TakeDamage(DamageAmount);
+
+        if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(EnemyActor))
+        {
+            EnemyCharacter->TakeDamage(DamageAmount);
+        }
+        if (ASpeedEnemy* SpeedEnemy = Cast<ASpeedEnemy>(EnemyActor))
+        {
+            SpeedEnemy->TakeDamage(DamageAmount);
+        }
+        if (ATankEnemy* TankEnemy = Cast<ATankEnemy>(EnemyActor))
+        {
+            TankEnemy->TakeDamage(DamageAmount);
+        }
     }
 }

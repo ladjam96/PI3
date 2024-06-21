@@ -1,7 +1,8 @@
 #include "BasicAttackActor.h"
-#include "BaseAttack.h" // Include BaseAttack header for UBaseAttack class
+#include "BaseAttack.h"
+#include "SpeedEnemy.h"
+#include "TankEnemy.h"
 #include "Engine/StaticMesh.h"
-#include "GameFramework/ProjectileMovementComponent.h"
 
 ABasicAttackActor::ABasicAttackActor()
 {
@@ -65,9 +66,9 @@ void ABasicAttackActor::Initialize(const FVector& StartLocation, const FVector& 
 
 void ABasicAttackActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-    if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(OtherActor))
+    if (OtherActor && (OtherActor != this))
     {
-        ApplyDamage(EnemyCharacter);
+        ApplyDamage(OtherActor);
     }
 }
 
@@ -76,11 +77,23 @@ void ABasicAttackActor::SetBasicAbility(UBaseAttack* Ability)
     BasicAttackAbility = Ability;
 }
 
-void ABasicAttackActor::ApplyDamage(AEnemyCharacter* EnemyCharacter)
+void ABasicAttackActor::ApplyDamage(AActor* EnemyActor)
 {
-    if (EnemyCharacter && BasicAttackAbility)
+    if (BasicAttackAbility)
     {
         float DamageAmount = BasicAttackAbility->DamageAmount;
-        EnemyCharacter->TakeDamage(DamageAmount);
+
+        if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(EnemyActor))
+        {
+            EnemyCharacter->TakeDamage(DamageAmount);
+        }
+        if (ASpeedEnemy* SpeedEnemy = Cast<ASpeedEnemy>(EnemyActor))
+        {
+            SpeedEnemy->TakeDamage(DamageAmount);
+        }
+        if (ATankEnemy* TankEnemy = Cast<ATankEnemy>(EnemyActor))
+        {
+            TankEnemy->TakeDamage(DamageAmount);
+        }
     }
 }

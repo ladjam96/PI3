@@ -2,6 +2,8 @@
 
 #include "CoreMinimal.h"
 #include "EnemyCharacter.h"
+#include "SpeedEnemy.h"
+#include "TankEnemy.h"
 #include "GameFramework/Actor.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/SphereComponent.h"
@@ -27,10 +29,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void ReduceEnemySpeed(AEnemyCharacter* EnemyCharacter);
+	void ReduceEnemySpeed(AActor* EnemyActor);
 	
 	UFUNCTION()
-	void ApplyDamage(AEnemyCharacter* EnemyCharacter);
+	void ApplyDamage(AActor* EnemyActor);
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

@@ -1,6 +1,8 @@
 #include "ShockwaveAbility.h"
 
 #include "EnemyCharacter.h"
+#include "SpeedEnemy.h"
+#include "TankEnemy.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
 #include "Kismet/GameplayStatics.h"
@@ -26,7 +28,7 @@ void UShockwaveAbility::Activate()
         {
             ActivationLocation = GetActivationLocation();
             ApplyShockwaveEffect(ActivationLocation);
-            
+
             bIsActivated = true;
 
             ResetCooldown();
@@ -49,14 +51,22 @@ void UShockwaveAbility::ApplyShockwaveEffect(const FVector& Origin)
 {
     TArray<AActor*> OverlappingActors;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), OverlappingActors);
-    
+
     for (AActor* Actor : OverlappingActors)
     {
         if (Actor != GetOwner())
         {
-            if (AEnemyCharacter* Enemy = Cast<AEnemyCharacter>(Actor))
+            if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(Actor))
             {
-                Enemy->TakeDamage(DamageAmount);
+                EnemyCharacter->TakeDamage(DamageAmount);
+            }
+            else if (ASpeedEnemy* SpeedEnemy = Cast<ASpeedEnemy>(Actor))
+            {
+                SpeedEnemy->TakeDamage(DamageAmount);
+            }
+            else if (ATankEnemy* TankEnemy = Cast<ATankEnemy>(Actor))
+            {
+                TankEnemy->TakeDamage(DamageAmount);
             }
 
             FVector Direction = Actor->GetActorLocation() - Origin;
@@ -83,18 +93,17 @@ void UShockwaveAbility::ApplyShockwaveEffect(const FVector& Origin)
     {
         NiagaraComponent->SetWorldLocation(Origin);
         NiagaraComponent->Activate(true);
-        
+
         FTimerHandle TimerHandle;
         GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UShockwaveAbility::DeactivateNiagaraComponent, NiagaraDuration, false);
     }
 }
-
 
 void UShockwaveAbility::DeactivateNiagaraComponent()
 {
     if (NiagaraComponent)
     {
         NiagaraComponent->Deactivate();
-        bIsActivated = false;
     }
+    bIsActivated = false;
 }

@@ -38,9 +38,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void GainExperience(float ExperienceAmount);
-
-	UFUNCTION(BlueprintCallable)
-	void Attack(float DamageAmount);
 	
 	UFUNCTION(BlueprintCallable)
 	void TakeDamage(float DamageAmount);
@@ -83,6 +80,9 @@ public:
 		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsDead = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool WasHit = false;
 
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }

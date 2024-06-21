@@ -194,13 +194,10 @@ void API3Character::Move(const FInputActionValue& Value)
 //     }
 // }
 
-void API3Character::Attack(float DamageAmount)
-{    
-
-}
-
 void API3Character::TakeDamage(float DamageAmount)
 {
+    WasHit = true;
+    
     CurrentHealth -= DamageAmount;
 
     if(CurrentHealth <= 0)
