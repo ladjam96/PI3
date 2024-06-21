@@ -16,5 +16,18 @@ public:
 	void OnNewGameClicked();
 
 	UFUNCTION()
+	void OnControlsClicked();
+
+	UFUNCTION()
 	void OnExitClicked();
+
+	UFUNCTION()
+	void OnCloseControlsClicked();
+
+private:
+	UPROPERTY(EditAnywhere, Category="Widgets")
+	TSubclassOf<UUserWidget> ControlsOverlayClass;
+
+	UPROPERTY()
+	UUserWidget* ControlsOverlay;
 };
