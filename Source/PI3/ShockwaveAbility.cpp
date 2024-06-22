@@ -47,7 +47,7 @@ FVector UShockwaveAbility::GetActivationLocation() const
 }
 
 void UShockwaveAbility::ApplyShockwaveEffect(const FVector& Origin)
-{
+{    
     TArray<AActor*> OverlappingActors;
     UGameplayStatics::GetAllActorsOfClass(GetWorld(), AActor::StaticClass(), OverlappingActors);
 
@@ -88,10 +88,13 @@ void UShockwaveAbility::ApplyShockwaveEffect(const FVector& Origin)
         }
     }
 
-    if (NiagaraComponent && ShockwaveSound)
+    if (NiagaraComponent)
     {
-        UGameplayStatics::PlaySound2D(GetWorld(), ShockwaveSound);
-
+        if(ShockwaveSound)
+        {
+            UGameplayStatics::PlaySound2D(GetWorld(), ShockwaveSound);
+        }
+        
         NiagaraComponent->SetWorldLocation(Origin);
         NiagaraComponent->Activate(true);
 

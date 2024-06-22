@@ -21,7 +21,8 @@ void UBaseAttack::Activate()
 
         if (Owner && BasicAttackActorClass)
         {
-            FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 100.f;
+            FVector Offset = FVector(100.f, 50.f, 20.f);
+            FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * Offset.X + Owner->GetActorRightVector() * Offset.Y + Owner->GetActorUpVector() * Offset.Z;
 
             FActorSpawnParameters SpawnParams;
             SpawnParams.Owner = Owner;
