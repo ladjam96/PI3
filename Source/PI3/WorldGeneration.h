@@ -46,11 +46,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GenerateTerrain(const int SectionIndexX, const int SectionIndexY);
     
-	float GetHeight(FVector2D Location); // if we want Height for the level of Vampire Survivor :3
+	float GetHeight(FVector2D Location); // if we want at the end to add height to the map level
 
 private:
 	FVector2D LastPlayerSection;
 	void CheckAndGenerateNewTerrain();
-	TWeakObjectPtr<AActor> Player; //AActor* Player;
+	TWeakObjectPtr<AActor> Player; 
 	void FindPlayer();
 };

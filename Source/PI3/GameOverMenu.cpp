@@ -23,7 +23,7 @@ void UGameOverMenu::OnContinueClicked()
 		UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
 	}
 
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("ThirdPersonMap"), true);
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("MainMenu"), true);
 }
 
 void UGameOverMenu::OnExitClicked()
