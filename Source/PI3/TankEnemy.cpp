@@ -24,7 +24,7 @@ ATankEnemy::ATankEnemy()
 	AttackCooldown = 5.0f;
 	LastAttackTime = 0.0f;
 	Damage = 100.f;
-
+	
 	MaxHealth = 500.0f;
 	CurrentHealth = MaxHealth;
 
