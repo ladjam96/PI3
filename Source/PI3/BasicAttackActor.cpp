@@ -13,7 +13,7 @@ ABasicAttackActor::ABasicAttackActor()
 
     SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
     SphereCollider->SetupAttachment(RootComponent);
-    SphereCollider->SetSphereRadius(150.f);
+    SphereCollider->SetSphereRadius(250.f);
     SphereCollider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     SphereCollider->SetCollisionResponseToAllChannels(ECR_Ignore);
     SphereCollider->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);

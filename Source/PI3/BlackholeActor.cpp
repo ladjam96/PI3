@@ -16,7 +16,7 @@ ABlackholeActor::ABlackholeActor()
 
     SphereCollider = CreateDefaultSubobject<USphereComponent>(TEXT("SphereCollider"));
     SphereCollider->SetupAttachment(RootComponent);
-    SphereCollider->SetSphereRadius(150.0f);
+    SphereCollider->SetSphereRadius(250.0f);
     SphereCollider->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
     SphereCollider->SetCollisionResponseToAllChannels(ECR_Ignore);
     SphereCollider->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Overlap);
@@ -73,15 +73,18 @@ void ABlackholeActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
     {
         if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(OtherActor))
         {
-            ReduceEnemySpeed(EnemyCharacter);
+            if(IsValid(EnemyCharacter))
+                ReduceEnemySpeed(EnemyCharacter);
         }
         else if (ASpeedEnemy* SpeedEnemy = Cast<ASpeedEnemy>(OtherActor))
         {
-            ReduceEnemySpeed(SpeedEnemy);
+            if(IsValid(SpeedEnemy))
+                ReduceEnemySpeed(SpeedEnemy);
         }
         else if (ATankEnemy* TankEnemy = Cast<ATankEnemy>(OtherActor))
         {
-            ReduceEnemySpeed(TankEnemy);
+            if(IsValid(TankEnemy))
+                ReduceEnemySpeed(TankEnemy);
         }
 
         ApplyDamage(OtherActor);
@@ -90,6 +93,8 @@ void ABlackholeActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
 
 void ABlackholeActor::ReduceEnemySpeed(AActor* EnemyActor)
 {
+    FTimerHandle SpeedRestoreTimerHandle;
+
     if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(EnemyActor))
     {
         float OriginalSpeed = EnemyCharacter->GetCharacterMovement()->MaxWalkSpeed;
@@ -97,10 +102,10 @@ void ABlackholeActor::ReduceEnemySpeed(AActor* EnemyActor)
 
         EnemyCharacter->GetCharacterMovement()->MaxWalkSpeed = ReducedSpeed;
 
-        FTimerHandle SpeedRestoreTimerHandle;
-        GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [EnemyCharacter, OriginalSpeed]() {
-            EnemyCharacter->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
-        }, 15.0f, false);
+        GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [EnemyCharacter, OriginalSpeed]()
+            {
+                EnemyCharacter->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
+            }, 5.0f, false);
     }
     else if (ASpeedEnemy* SpeedEnemy = Cast<ASpeedEnemy>(EnemyActor))
     {
@@ -109,10 +114,10 @@ void ABlackholeActor::ReduceEnemySpeed(AActor* EnemyActor)
 
         SpeedEnemy->GetCharacterMovement()->MaxWalkSpeed = ReducedSpeed;
 
-        FTimerHandle SpeedRestoreTimerHandle;
-        GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [SpeedEnemy, OriginalSpeed]() {
-            SpeedEnemy->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
-        }, 15.0f, false);
+        GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [SpeedEnemy, OriginalSpeed]()
+            {
+                SpeedEnemy->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;
+            }, 15.0f, false);
     }
     else if (ATankEnemy* TankEnemy = Cast<ATankEnemy>(EnemyActor))
     {
@@ -121,7 +126,6 @@ void ABlackholeActor::ReduceEnemySpeed(AActor* EnemyActor)
 
         TankEnemy->GetCharacterMovement()->MaxWalkSpeed = ReducedSpeed;
 
-        FTimerHandle SpeedRestoreTimerHandle;
         GetWorld()->GetTimerManager().SetTimer(SpeedRestoreTimerHandle, [TankEnemy, OriginalSpeed]()
         {
             TankEnemy->GetCharacterMovement()->MaxWalkSpeed = OriginalSpeed;

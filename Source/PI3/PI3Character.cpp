@@ -242,7 +242,11 @@ void API3Character::GainExperience(float ExperienceAmount)
 void API3Character::LevelUp()
 {
     CurrentLevel++;
-    MaxHealth *= 1.5f;
+    MaxHealth *= 1.25f;
+
+    float HealthRestored = MaxHealth / 2.0f;
+    CurrentHealth = FMath::Min(CurrentHealth + HealthRestored, MaxHealth);
+    
     ExperienceToNextLevel = CalculateExperienceToNextLevel();
     CurrentExperience = 0.0f;
 
@@ -251,6 +255,8 @@ void API3Character::LevelUp()
         PlayerHUDInstance->UpdateLevelText(CurrentLevel);
         PlayerHUDInstance->UpdateExpBar(CurrentExperience, ExperienceToNextLevel);
         PlayerHUDInstance->UpdateExpText(CurrentExperience, ExperienceToNextLevel);
+        PlayerHUDInstance->UpdateHealthBar(CurrentHealth, MaxHealth);
+        PlayerHUDInstance->UpdateHealthText(CurrentHealth, MaxHealth);
     }
 
     ShowImproveAbilitiesMenu();
