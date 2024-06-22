@@ -73,18 +73,18 @@ void ABlackholeActor::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor
     {
         if (AEnemyCharacter* EnemyCharacter = Cast<AEnemyCharacter>(OtherActor))
         {
-            if(IsValid(EnemyCharacter))
-                ReduceEnemySpeed(EnemyCharacter);
+            /*if(IsValid(EnemyCharacter))
+                ReduceEnemySpeed(EnemyCharacter);*/
         }
         else if (ASpeedEnemy* SpeedEnemy = Cast<ASpeedEnemy>(OtherActor))
         {
-            if(IsValid(SpeedEnemy))
-                ReduceEnemySpeed(SpeedEnemy);
+            /*if(IsValid(SpeedEnemy))
+                ReduceEnemySpeed(SpeedEnemy);*/
         }
         else if (ATankEnemy* TankEnemy = Cast<ATankEnemy>(OtherActor))
         {
-            if(IsValid(TankEnemy))
-                ReduceEnemySpeed(TankEnemy);
+            /*if(IsValid(TankEnemy))
+                ReduceEnemySpeed(TankEnemy);*/
         }
 
         ApplyDamage(OtherActor);
