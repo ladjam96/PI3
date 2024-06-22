@@ -144,7 +144,7 @@ void AWorldGeneration::CheckAndGenerateNewTerrain()
     
     if (CurrentPlayerSection != LastPlayerSection)
     {
-        // Generate the central section and the surrounding sections
+        // Central and surroundings sections 
         GenerateTerrain(CurrentPlayerSection.X, CurrentPlayerSection.Y);
         GenerateTerrain(CurrentPlayerSection.X + 1, CurrentPlayerSection.Y);
         GenerateTerrain(CurrentPlayerSection.X - 1, CurrentPlayerSection.Y);

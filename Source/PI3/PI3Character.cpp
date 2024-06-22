@@ -90,12 +90,6 @@ void API3Character::BeginPlay()
             Subsystem->AddMappingContext(DefaultMappingContext, 0);
         }
     }
-
-    // FTimerHandle HealthDecreaseTimerHandle;
-    // GetWorldTimerManager().SetTimer(HealthDecreaseTimerHandle, this, &API3Character::DecreaseHealth, 1.0f, true, 0.0f);
-    //
-    // FTimerHandle ExpIncreaseTimerHandle;
-    // GetWorldTimerManager().SetTimer(ExpIncreaseTimerHandle, this, &API3Character::IncreaseExp, 1.0f, true, 0.0f);    
 }
 
 void API3Character::Tick(float DeltaTime)
@@ -168,30 +162,6 @@ void API3Character::Move(const FInputActionValue& Value)
         AddMovementInput(RightDirection, MovementVector.X);
     }
 }
-
-// void API3Character::DecreaseHealth()
-// {
-//     CurrentHealth -= 50.0f;
-//     CurrentHealth = FMath::Max(CurrentHealth, 0.0f);
-//
-//     if (PlayerHUDClass && PlayerHUDInstance)
-//     {
-//         PlayerHUDInstance->UpdateHealthBar(CurrentHealth, MaxHealth);
-//         PlayerHUDInstance->UpdateHealthText(CurrentHealth, MaxHealth);
-//     }
-//
-//     if(CurrentHealth <= 0)
-//     {
-//         IsDead = true;
-//
-//         APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-//         APawn* PlayerPawn = PlayerController->GetPawn(); 
-//         
-//         PlayerPawn->DisableInput(PlayerController);
-//         
-//         UE_LOG(LogTemp, Log, TEXT("Character has died!"));
-//     }
-// }
 
 void API3Character::TakeDamage(float DamageAmount)
 {

@@ -22,7 +22,6 @@ public:
 	API3Character();
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	// void DecreaseHealth();
 
 	void Move(const FInputActionValue& Value);
 
