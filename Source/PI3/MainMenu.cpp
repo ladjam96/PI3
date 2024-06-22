@@ -31,7 +31,7 @@ void UMainMenu::OnNewGameClicked()
 		UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
 	}
 	
-	UGameplayStatics::OpenLevel(GetWorld(), TEXT("PlaygroundLuis"), true);
+	UGameplayStatics::OpenLevel(GetWorld(), TEXT("ThirdPersonMap"), true);
 }
 
 void UMainMenu::OnControlsClicked()
