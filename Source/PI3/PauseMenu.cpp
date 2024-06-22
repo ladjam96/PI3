@@ -18,6 +18,11 @@ void UPauseMenu::NativeConstruct()
 
 void UPauseMenu::OnContinueClick()
 {
+	if (ClickSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
+	}
+	
 	UGameplayStatics::SetGamePaused(GetWorld(), false);
 
 	RemoveFromParent();
@@ -25,6 +30,11 @@ void UPauseMenu::OnContinueClick()
 
 void UPauseMenu::OnRestartClick()
 {
+	if (ClickSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
+	}
+	
 	UWorld* World = GetWorld();
 	
 	if(World)

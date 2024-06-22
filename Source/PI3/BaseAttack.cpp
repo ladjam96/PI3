@@ -1,6 +1,7 @@
 #include "BaseAttack.h"
 #include "BasicAttackActor.h"
 #include "Engine/World.h"
+#include "Kismet/GameplayStatics.h"
 
 UBaseAttack::UBaseAttack()
 {
@@ -27,8 +28,10 @@ void UBaseAttack::Activate()
             SpawnParams.Instigator = Owner->GetInstigator();
 
             ActiveSphere = GetWorld()->SpawnActor<ABasicAttackActor>(BasicAttackActorClass, SpawnLocation, FRotator::ZeroRotator, SpawnParams);
-            if (ActiveSphere)
+            if (ActiveSphere && BasicAttackSound)
             {
+                UGameplayStatics::PlaySound2D(GetWorld(), BasicAttackSound);
+
                 ActiveSphere->Initialize(SpawnLocation, Owner->GetActorForwardVector(), Range);
                 ActiveSphere->SetBasicAbility(this);
 

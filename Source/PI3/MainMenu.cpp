@@ -26,11 +26,21 @@ void UMainMenu::NativeConstruct()
 
 void UMainMenu::OnNewGameClicked()
 {
+	if (ClickSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
+	}
+	
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("ThirdPersonMap"), true);
 }
 
 void UMainMenu::OnControlsClicked()
 {
+	if (ClickSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
+	}
+	
 	if (!ControlsOverlayClass) return;
 	
 	if (!ControlsOverlay)
@@ -51,6 +61,11 @@ void UMainMenu::OnControlsClicked()
 
 void UMainMenu::OnCloseControlsClicked()
 {
+	if (ClickSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
+	}
+	
 	if (ControlsOverlay)
 	{
 		ControlsOverlay->RemoveFromViewport();
@@ -59,6 +74,11 @@ void UMainMenu::OnCloseControlsClicked()
 
 void UMainMenu::OnExitClicked()
 {
+	if (ClickSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
+	}
+	
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	UKismetSystemLibrary::QuitGame(GetWorld(), PlayerController, EQuitPreference::Quit, true);
 }

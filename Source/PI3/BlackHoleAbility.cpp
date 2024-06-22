@@ -1,5 +1,6 @@
 #include "BlackHoleAbility.h"
 #include "BlackholeActor.h"
+#include "Kismet/GameplayStatics.h"
 
 UBlackHoleAbility::UBlackHoleAbility()
 {
@@ -17,8 +18,11 @@ void UBlackHoleAbility::Activate()
 	{
 		AActor* Owner = GetOwner();
 
-		if (Owner && BlackHoleActorClass)
+		if (Owner && BlackHoleActorClass && BlackholeSound)
 		{
+
+			UGameplayStatics::PlaySound2D(GetWorld(), BlackholeSound);
+
 			FVector SpawnLocation = Owner->GetActorLocation() + Owner->GetActorForwardVector() * 100.f;
 
 			FActorSpawnParameters SpawnParams;

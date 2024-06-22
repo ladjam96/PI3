@@ -27,7 +27,10 @@ public:
 	float SphereSpeed = 0.f;
 
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<ABasicAttackActor> BasicAttackActorClass;
+	TSubclassOf<ABasicAttackActor> BasicAttackActorClass = nullptr;
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* BasicAttackSound = nullptr;
 
 private:
 	ABasicAttackActor* ActiveSphere = nullptr;

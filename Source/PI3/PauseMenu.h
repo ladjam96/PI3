@@ -22,4 +22,7 @@ public:
 	
 	UFUNCTION()
 	void OnRestartClick();
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* ClickSound = nullptr;
 };

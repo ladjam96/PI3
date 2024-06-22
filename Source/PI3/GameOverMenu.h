@@ -17,4 +17,7 @@ public:
 
 	UFUNCTION()
 	void OnExitClicked();
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* ClickSound = nullptr;
 };

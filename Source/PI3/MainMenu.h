@@ -24,6 +24,9 @@ public:
 	UFUNCTION()
 	void OnCloseControlsClicked();
 
+	UPROPERTY(EditAnywhere)
+	USoundBase* ClickSound = nullptr;
+
 private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUserWidget> ControlsOverlayClass = nullptr;

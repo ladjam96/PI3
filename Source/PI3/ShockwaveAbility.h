@@ -33,6 +33,9 @@ public:
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     float NiagaraDuration = 0.4f;
 
+    UPROPERTY(EditAnywhere)
+    USoundBase* ShockwaveSound = nullptr;
+
 private:
     FVector GetActivationLocation() const;
 

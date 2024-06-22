@@ -18,11 +18,21 @@ void UGameOverMenu::NativeConstruct()
 
 void UGameOverMenu::OnContinueClicked()
 {
+	if (ClickSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
+	}
+
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("ThirdPersonMap"), true);
 }
 
 void UGameOverMenu::OnExitClicked()
 {
+	if (ClickSound)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ClickSound);
+	}
+
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	UKismetSystemLibrary::QuitGame(GetWorld(), PlayerController, EQuitPreference::Quit, true);
 }

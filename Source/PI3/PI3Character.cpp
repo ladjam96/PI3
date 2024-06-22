@@ -104,7 +104,7 @@ void API3Character::Tick(float DeltaTime)
 
     //Camera Rotation & Location
     FollowCamera->SetRelativeRotation(FRotator(-35.0f, 0.0f, 0.0f));
-    FollowCamera->SetRelativeLocation(FVector(-100.0f, 0.0f, 370.0f)); 
+    FollowCamera->SetRelativeLocation(FVector(-400.0f, 0.0f, 370.0f)); 
     CameraBoom->SetRelativeLocation(FVector(0, 0 , 500.f));
 
     if (BlackHoleAttack)
@@ -242,9 +242,9 @@ void API3Character::GainExperience(float ExperienceAmount)
 void API3Character::LevelUp()
 {
     CurrentLevel++;
+    MaxHealth *= 1.5f;
     ExperienceToNextLevel = CalculateExperienceToNextLevel();
     CurrentExperience = 0.0f;
-    UE_LOG(LogTemp, Log, TEXT("Leveled up to %d"), CurrentLevel);
 
     if (PlayerHUDInstance)
     {
@@ -270,6 +270,7 @@ void API3Character::ShowImproveAbilitiesMenu()
             APlayerController* PlayerController = Cast<APlayerController>(GetController());
             if (PlayerController)
             {
+                PlayerController->SetPause(true);
                 PlayerController->bShowMouseCursor = true;
             }
         }

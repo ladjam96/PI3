@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ABlackholeActor> BlackHoleActorClass = nullptr;
 
+	UPROPERTY(EditAnywhere)
+	USoundBase* BlackholeSound = nullptr;
+
 private:
 	ABlackholeActor* ActiveBlackHole = nullptr;
 	

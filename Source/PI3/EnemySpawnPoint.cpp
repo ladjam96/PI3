@@ -67,7 +67,7 @@ void AEnemySpawnPoint::SpawnEnemy(TSubclassOf<ACharacter> EnemyClass)
 		SpawnLocation = PlayerPawn->GetActorLocation() + FVector(RandPointInCircle, 0.0f);
 		Attempts++;
 		
-		if (FVector::Dist(SpawnLocation, PlayerPawn->GetActorLocation()) > 500.0f) 
+		if (FVector::Dist(SpawnLocation, PlayerPawn->GetActorLocation()) > 600.0f) 
 		{
 			bValidSpawnLocation = true;
 		}

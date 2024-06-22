@@ -88,8 +88,10 @@ void UShockwaveAbility::ApplyShockwaveEffect(const FVector& Origin)
         }
     }
 
-    if (NiagaraComponent)
+    if (NiagaraComponent && ShockwaveSound)
     {
+        UGameplayStatics::PlaySound2D(GetWorld(), ShockwaveSound);
+
         NiagaraComponent->SetWorldLocation(Origin);
         NiagaraComponent->Activate(true);
 
